@@ -1,0 +1,26 @@
+{
+  "name": "IoTLoRaPlatform",
+  "version": "1.0.0",
+  "description": "Prototyping a data platform to support IoT devices via LoRaWAN",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pheeling/IoTLoRaPlatform.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pheeling/IoTLoRaPlatform/issues"
+  },
+  "homepage": "https://github.com/pheeling/IoTLoRaPlatform#readme",
+  "dependencies": {
+    "@iota/converter": "^1.0.0-beta.30",
+    "@iota/core": "^1.0.0-beta.30",
+    "@types/bluebird": "^3.5.33",
+    "got": "^11.8.2"
+  }
+}
