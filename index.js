@@ -1,6 +1,7 @@
 // Require the client library packages
 const Iota = require('@iota/core');
 const Converter = require('@iota/converter');
+const iotaAreaCodes = require('@iota/area-codes');
 const got = require('got');
 
 // Create a new instance of the IOTA API object
@@ -22,37 +23,41 @@ var options = {
     'method': 'GET',
     'url': 'http://myStrom-Switch-43F2B8/report'
 };
+var iac = iotaAreaCodes.encode(47.22681463962826, 8.663457142353627, iotaAreaCodes.CodePrecision.EXTRA);
 
 (async () => {
 	try {
 		const response = await got(options);
         const message = response.body
 		console.log(response.body);
-        const messageInTrytes = Converter.asciiToTrytes(message);
-
-        const PrepareTransfers = Iota.createPrepareTransfers();
-        const transfers = [
-            {
-                value: 0,
-                address: address,
-                message: messageInTrytes
-            }
-        ];
-
-        Iota
-            PrepareTransfers(seed, transfers)
-            .then(trytes => {
-                return iota.sendTrytes(trytes, depth, minimumWeightMagnitude);
-            })
-            .then(bundle => {
-                console.log(bundle[0].hash)
-            })
-            .catch(err => {
-                console.error(err)
-            });
-        	} catch (error) {
-        		console.log(error.response.body);
-        	}
+        sendIOTAMessage(message);
+    } catch (error) {
+        console.log(error.response.body);
+    }
 })();
 
+function sendIOTAMessage (message){
+    const messageInTrytes = Converter.asciiToTrytes(message);
 
+    const PrepareTransfers = Iota.createPrepareTransfers();
+    const transfers = [
+        {
+            value: 0,
+            address: address,
+            message: messageInTrytes,
+            tag: iac
+        }
+    ];
+
+    Iota
+        PrepareTransfers(seed, transfers)
+        .then(trytes => {
+            return iota.sendTrytes(trytes, depth, minimumWeightMagnitude);
+        })
+        .then(bundle => {
+            console.log(bundle[0].hash)
+        })
+        .catch(err => {
+            console.error(err)
+        });
+}

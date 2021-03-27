@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/pheeling/IoTLoRaPlatform#readme",
   "dependencies": {
+    "@iota/area-codes": "^0.1.1",
     "@iota/converter": "^1.0.0-beta.30",
     "@iota/core": "^1.0.0-beta.30",
     "@types/bluebird": "^3.5.33",
