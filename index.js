@@ -13,8 +13,12 @@ provider: 'https://nodes.devnet.iota.org:443'
 const depth = 3;
 const minimumWeightMagnitude = 9;
 
-const address =
+/* const address =
 'HEQLOWORLDHELLOWORLDHELLOWORLDHELLOWORLDHELLOWORLDHELLOWORLDHELLOWORLDHELLOWOR99D';
+ */
+
+const address =
+'HEQLOPHILIHELLOPHILIHELLOWORLDHELLOWORLDHELLOWORLDHELLOWORLDHELLOWORLDHELLOWOR99D';
 
 const seed =
 'PUEOTSEITFEVEWCWBTSIZM9NKRGJEIMXTULBACGFRQK9IMGICLBKW9TTEVSDQMGWKBXPVCBMMCXWMNPDX';
@@ -23,14 +27,18 @@ var options = {
     'method': 'GET',
     'url': 'http://myStrom-Switch-43F2B8/report'
 };
-var iac = iotaAreaCodes.encode(47.22681463962826, 8.663457142353627, iotaAreaCodes.CodePrecision.EXTRA);
+var iac = iotaAreaCodes.encode(47.22681455133932, 8.663277730383621, iotaAreaCodes.CodePrecision.EXTRA);
+
+const message = JSON.stringify({power: 0, Ws: 0, relay: true, temperature: 4.8100000000000005});
+
+sendIOTAMessage(message);
 
 (async () => {
 	try {
 		const response = await got(options);
-        const message = response.body
-		console.log(response.body);
-        sendIOTAMessage(message);
+        //const message = JSON.parse(response.body);
+		console.log(message);
+        //sendIOTAMessage(message);
     } catch (error) {
         console.log(error.response.body);
     }
