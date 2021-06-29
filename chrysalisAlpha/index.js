@@ -1,4 +1,4 @@
-async function run() {
+async function run(data) {
 
     const { ClientBuilder } = require('@iota/client');
 
@@ -8,16 +8,23 @@ async function run() {
         .build();
 
     client.getInfo().then(console.log).catch(console.error);
-
-    const message = await client.message()
-        .index('074c4ddafa5643e3814b2af31024b3a3715b222f04ca6698bff670bbca704e00')
-        .data('{"power":30.87,"Ws":31.27,"relay":true,"temperature":14.8}')
-        .submit();
-
-    console.log(message);
+    
+    const tips = await client.getTips();
+    const message_metadata = await client.getMessage().metadata(tips[0]);
+    if(message_metadata.isSolid == true){
+      console.log(message_metadata);
+      var message = await client.message()
+      .index(message_metadata.messageId)
+      .data(data)
+      .submit();
+      console.log(message)
+    } else {
+      console.log("no solid message");
+    }   
 }
 
-function mystrom (){
+async function mystrom () {
+  return new Promise(function(resolve, reject) {
     const request = require('request');
     var options = {
       'method': 'GET',
@@ -28,8 +35,10 @@ function mystrom (){
     request(options, function (error, response) {
       if (error) throw new Error(error);
       console.log(response.body);
+      resolve(response.body)
     });
-}
+  });
+};
 
-run()
+mystrom().then(data => run(data))
 
