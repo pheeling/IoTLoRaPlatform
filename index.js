@@ -27,7 +27,7 @@ var options = {
     'method': 'GET',
     'url': 'http://myStrom-Switch-43F2B8/report'
 };
-var iac = iotaAreaCodes.encode(47.22681455133932, 8.663277730383621, iotaAreaCodes.CodePrecision.EXTRA);
+var iac = iotaAreaCodes.encode(47.22681455133932, 8.663277730383621);
 
 const message = JSON.stringify({power: 0, Ws: 0, relay: true, temperature: 4.8100000000000005});
 

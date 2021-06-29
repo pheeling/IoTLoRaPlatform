@@ -1,5 +1,5 @@
 {
-  "name": "IoTLoRaPlatform",
+  "name": "iotloraplatform",
   "version": "1.0.0",
   "description": "Prototyping a data platform to support IoT devices via LoRaWAN",
   "main": "index.js",
@@ -11,7 +11,7 @@
     "url": "git+https://github.com/pheeling/IoTLoRaPlatform.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "phili",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/pheeling/IoTLoRaPlatform/issues"
@@ -27,5 +27,6 @@
     "@types/bluebird": "^3.5.33",
     "ava": "^3.15.0",
     "got": "^11.8.2"
-  }
+  },
+  "devDependencies": {}
 }
