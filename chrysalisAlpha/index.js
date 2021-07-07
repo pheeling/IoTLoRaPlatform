@@ -10,7 +10,8 @@ async function run(data) {
     client.getInfo().then(console.log).catch(console.error);
     
     const tips = await client.getTips();
-    const message_metadata = await client.getMessage().metadata(tips[0]);
+    // const message_metadata = await client.getMessage().metadata(tips[0]);
+    const message_metadata = await client.getMessage().metadata("1e31ce59adf99710d99ee27e4511ee86af334f7d5c26513391742ae4a4ff6d3d")
     if(message_metadata.isSolid == true){
       console.log(message_metadata);
       var message = await client.message()
@@ -41,4 +42,3 @@ async function mystrom () {
 };
 
 mystrom().then(data => run(data))
-
