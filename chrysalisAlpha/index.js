@@ -11,7 +11,7 @@ async function run(data) {
     
     const tips = await client.getTips();
     // const message_metadata = await client.getMessage().metadata(tips[0]);
-    const message_metadata = await client.getMessage().metadata("1e31ce59adf99710d99ee27e4511ee86af334f7d5c26513391742ae4a4ff6d3d")
+    const message_metadata = await client.getMessage().metadata("3a9c6cba69e5a342653bff276c5987ecf1f7fff6fd3cf001dcb85335dc7ef9df")
     if(message_metadata.isSolid == true){
       console.log(message_metadata);
       var message = await client.message()
@@ -41,4 +41,51 @@ async function mystrom () {
   });
 };
 
-mystrom().then(data => run(data))
+async function getData(messageId){
+  const { ClientBuilder } = require('@iota/client');
+
+  // client will connect to testnet by default
+  const client = new ClientBuilder().build();
+
+  const message_index = await client.getMessage().index(messageId);
+  const messages = new Array;
+  console.log(message_index);
+
+  message_index.forEach(element => {
+    messages.push(getMessage(element, client))
+  });
+  return messages
+}
+
+async function getMessage(messageId, client){
+  const message_data = await client.getMessage().raw(messageId)
+  let regex = /{.*}/g;
+  const found = message_data.match(regex);
+  console.log(found);
+  return found
+}
+
+const http = require('http');
+const url = require('url');
+
+function handler(req, res) {
+    const parsedUrl =url.parse(req.url, true);
+    if(parsedUrl.pathname === '/'){
+        res.writeHead(200, {'Content-type':'text/plain'});
+        res.write('Hello, running IOTA in the console! And getting Data to the Tangle');
+        mystrom().then(data => run(data))
+        res.end();
+    }else if (parsedUrl.pathname === '/getData'){
+        res.writeHead(200, {'Content-type': 'text/plain'});
+        res.write(new Date().toString());
+        // how to work with async return??
+        res.write(getData('3a9c6cba69e5a342653bff276c5987ecf1f7fff6fd3cf001dcb85335dc7ef9df').toString());
+        return res.end();
+    }else {
+        res.writeHead(404, {'Content-type':'text/plain'});
+        res.end();
+    };
+}
+const server = http.createServer(handler);
+
+server.listen(3000);
