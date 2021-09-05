@@ -1,0 +1,31 @@
+{
+  "name": "chrysalisalpha",
+  "version": "1.0.0",
+  "description": "Writing and getting Solarpanel Data to the tangle with the goal to establish an exchange between low production solar panel owners.",
+  "main": "index.js",
+  "dependencies": {
+    "@iota/client": "^1.0.0",
+    "express": "^4.17.1",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pheeling/IoTLoRaPlatform.git"
+  },
+  "keywords": [
+    "solar",
+    "iota",
+    "energy",
+    "market"
+  ],
+  "author": "Philipp Hiestand <philipph@vitalitystream.ch> (https://philipphiestand.ch)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pheeling/IoTLoRaPlatform/issues"
+  },
+  "homepage": "https://github.com/pheeling/IoTLoRaPlatform#readme"
+}
