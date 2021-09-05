@@ -1,3 +1,8 @@
+const fs = require('fs')
+const filepath = 'log/messageIds.txt'
+const messageIdArray = new Array;
+const solarMeterUrl = 'http://myStrom-Switch-43F2B8/report'
+
 async function writeData(data) {
 
     const { ClientBuilder } = require('@iota/client');
@@ -10,8 +15,7 @@ async function writeData(data) {
     client.getInfo().then(console.log).catch(console.error);
     
     const tips = await client.getTips();
-    // const message_metadata = await client.getMessage().metadata(tips[0]);
-    const message_metadata = await client.getMessage().metadata("3a9c6cba69e5a342653bff276c5987ecf1f7fff6fd3cf001dcb85335dc7ef9df")
+    const message_metadata = await client.getMessage().metadata(tips[0]);
     if(message_metadata.isSolid == true){
       console.log(message_metadata);
       var message = await client.message()
@@ -22,6 +26,14 @@ async function writeData(data) {
     } else {
       console.log("no solid message");
     }   
+
+    fs.appendFile(filepath, message_metadata.messageId + "\r\n", function (err) {
+      if (err) {
+        console.log(err)
+      } else {
+        console.log('successfully added messageId')
+      }
+    })
 }
 
 async function mystrom () {
@@ -29,7 +41,7 @@ async function mystrom () {
     const request = require('request');
     var options = {
       'method': 'GET',
-      'url': 'http://myStrom-Switch-43F2B8/report',
+      'url': solarMeterUrl,
       'headers': {
       }
     };
@@ -65,4 +77,18 @@ async function getMessage(messageId, client){
   return found
 }
 
-module.exports = { getData, writeData, mystrom}
+async function getMessageId(){
+    fs.readFile(filepath, 'utf8', function (err,data) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(data);
+        const lines = data.split(/\r?\n/);
+        lines.forEach(element => {
+          getData(element)
+        });
+      }
+    });
+}
+
+module.exports = { getData, writeData, mystrom, getMessageId}

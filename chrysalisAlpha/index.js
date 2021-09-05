@@ -10,7 +10,7 @@ app.get('/', (req, res) => {
 
 app.get('/getData', (req, res) => {
     res.send(new Date().toString() + ' Collected Data to console')
-    iotaWriteRead.getData('3a9c6cba69e5a342653bff276c5987ecf1f7fff6fd3cf001dcb85335dc7ef9df')
+    iotaWriteRead.getMessageId()
 })
 
 app.listen(port, () => {

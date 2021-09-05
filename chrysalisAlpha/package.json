@@ -6,6 +6,7 @@
   "dependencies": {
     "@iota/client": "^1.0.0",
     "express": "^4.17.1",
+    "fs": "0.0.1-security",
     "request": "^2.88.2"
   },
   "devDependencies": {},
