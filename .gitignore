@@ -1,4 +1,4 @@
 .nyc_output/
 /iota-tutorial
 /my-strom
-/chrysalisAlpha/node_modules
+/chrysalisAlpha/node_modules/*
