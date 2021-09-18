@@ -70,25 +70,32 @@ async function getData(messageId){
 }
 
 async function getMessage(messageId, client){
-  const message_data = await client.getMessage().raw(messageId)
-  let regex = /{.*}/g;
-  const found = message_data.match(regex);
-  console.log(found);
-  return found
+    const message_data = await client.getMessage().raw(messageId)
+    let regex = /{.*}/g;
+    const found = message_data.match(regex);
+    console.log(found);
+    return found
 }
 
 async function getMessageId(){
+  return new Promise(function(resolve, reject) {
+    const dataArray = new Array
     fs.readFile(filepath, 'utf8', function (err,data) {
       if (err) {
         console.log(err);
+        reject(err);
       } else {
         console.log(data);
         const lines = data.split(/\r?\n/);
         lines.forEach(element => {
-          getData(element)
+          if(element.length > 0){
+            dataArray.push(getData(element))
+          }
         });
+        resolve(dataArray)
       }
     });
+  });
 }
 
 module.exports = { getData, writeData, mystrom, getMessageId}

@@ -9,8 +9,11 @@ app.get('/', (req, res) => {
 })
 
 app.get('/getData', (req, res) => {
-    res.send(new Date().toString() + ' Collected Data to console')
-    iotaWriteRead.getMessageId()
+    //res.send(new Date().toString() + ' Collected Data to console')
+    //https://stackoverflow.com/questions/37602748/updating-data-realtime-in-node-js-express-website
+    iotaWriteRead.getMessageId().then(result => 
+        res.send(result)
+    );
 })
 
 app.listen(port, () => {
