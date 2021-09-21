@@ -40,11 +40,11 @@ async function writeData(data) {
 async function mystrom () {
   const got = require('got');
 
-  got(solarMeterUrl, { json: true }).then(response => {
-    resolve(response.body)
+  got(solarMeterUrl).then(response => {
+    resolve(response.body);
     console.log(response.body);
   }).catch(error => {
-    console.log(error.response.body);
+    console.log(error);
   });
 
   // return new Promise(function(resolve, reject) {

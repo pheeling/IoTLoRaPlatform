@@ -6,3 +6,11 @@ body {
 a {
   color: #00B7FF;
 }
+
+button {
+  color: #00000077;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-size: medium;
+  width: auto;
+  height: auto;
+}
