@@ -6,6 +6,6 @@ block content
 
   div
     div.IOTAInteraction#GetAndSendData.body
-      form#SendData(action="/", method="post") 
+      form#main(action="/iota" method="GET")
         h1.send-title Send Data
-        button#sendbutton.button(type="submit") Send Data
+        button(type="submit") Get Data

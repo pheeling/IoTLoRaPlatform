@@ -37,7 +37,7 @@ async function writeData(data) {
     })
 }
 
-async function mystrom () {
+async function mystrom() {
   const got = require('got');
 
   got(solarMeterUrl).then(response => {

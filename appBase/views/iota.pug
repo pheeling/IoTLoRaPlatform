@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+
+  p #{dataField} results
+
+  div
+    div.IOTAInteraction#GetAndSendData.body
+    form#GetSolarData(action="/" method="GET")
+    h1.send-title Main
+    button(type="submit") back
