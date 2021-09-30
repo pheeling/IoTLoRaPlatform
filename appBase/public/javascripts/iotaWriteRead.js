@@ -1,8 +1,10 @@
 const fs = require('fs');
 const { resolve } = require('path');
-const filepath = 'log/messageIds.txt'
+const filepathMessageId = 'log/messageIds.txt'
+const filepathMeter = 'log/MeterData.txt'
 const messageIdArray = new Array;
 const solarMeterUrl = 'http://myStrom-Switch-43F2B8/report'
+const got = require('got');
 
 async function writeData(data) {
 
@@ -28,7 +30,7 @@ async function writeData(data) {
       console.log("no solid message");
     }   
 
-    fs.appendFile(filepath, message_metadata.messageId + "\r\n", function (err) {
+    fs.appendFile(filepathMessageId, message_metadata.messageId + "\r\n", function (err) {
       if (err) {
         console.log(err)
       } else {
@@ -38,29 +40,7 @@ async function writeData(data) {
 }
 
 async function mystrom() {
-  const got = require('got');
-
-  got(solarMeterUrl).then(response => {
-    resolve(response.body);
-    console.log(response.body);
-  }).catch(error => {
-    console.log(error);
-  });
-
-  // return new Promise(function(resolve, reject) {
-  //   const request = require('request');
-  //   var options = {
-  //     'method': 'GET',
-  //     'url': solarMeterUrl,
-  //     'headers': {
-  //     }
-  //   };
-  //   request(options, function (error, response) {
-  //     if (error) throw new Error(error);
-  //     console.log(response.body);
-  //     resolve(response.body)
-  //   });
-  // });
+  return await got(solarMeterUrl)
 };
 
 async function getData(messageId){

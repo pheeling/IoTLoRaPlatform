@@ -4,10 +4,8 @@ block content
   h1= title
   p Welcome to #{title}
 
-  p #{dataField} results
+  p#dataField #{dataField} results
 
   div
-    div.IOTAInteraction#GetAndSendData.body
-    form#GetSolarData(action="/" method="GET")
-    h1.send-title Main
-    button(type="submit") back
+    div.body#GetAndSendData
+    a(href="/") index

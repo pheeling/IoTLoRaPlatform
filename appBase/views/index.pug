@@ -3,9 +3,8 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
-
   div
-    div.IOTAInteraction#GetAndSendData.body
+    div.body#GetAndSendData
       form#main(action="/iota" method="GET")
         h1.send-title Send Data
         button(type="submit") Get Data
