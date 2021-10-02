@@ -6,6 +6,26 @@ block content
 
   p#dataField #{dataField} results
 
-  div
-    div.body#GetAndSendData
+  script.
+    var pTag = document.getElementById("dataField");
+
+    function getData(){
+      var pathname = window.location.pathname;
+      fetch(pathname + "/sub")
+      .then(response => response.json())
+      .then(data => pTag.innerHTML = JSON.stringify(data))
+    }
+
+    function doIota(){
+      var pathname = window.location.pathname;
+      fetch(pathname + "/writeToIota")
+      .then(response => response.json())
+      .then(data => console.log(data))
+    }      
+
+  div.body#dynamicContent
+    button.button(type="button" name="getMyStrom" onclick="getData();") Get Panel Data
+    //- button.button(type="button" name="writeToIota" onclick="doIota();") Write to Iota
+
+  div.body#goBack
     a(href="/") index
