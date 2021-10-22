@@ -1,0 +1,21 @@
+{
+  "name": "appbase",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "@iota/client": "^2.1.0",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "got": "^11.8.2",
+    "http-errors": "~1.6.3",
+    "morgan": "~1.9.1",
+    "neon-cli": "^0.9.1",
+    "prebuild-install": "^6.1.4",
+    "pug": "^3.0.1",
+    "util": "^0.12.4"
+  }
+}

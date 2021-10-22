@@ -1,0 +1,39 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+
+  p#dataField #{dataField} results
+
+  script.
+    var pTag = document.getElementById("dataField");
+
+    function getData(){
+      var pathname = window.location.pathname;
+      fetch(pathname + "/sub")
+      .then(response => response.json())
+      .then(data => pTag.innerHTML = JSON.stringify(data))
+    }
+
+    function doIota(){
+      var pathname = window.location.pathname;
+      fetch(pathname + "/writeToIota")
+      .then(response => response.text())
+      .then(data => pTag.innerHTML = data)
+    }
+
+    function getIota(){
+      var pathname = window.location.pathname;
+      fetch(pathname + "/getIotaData")
+      .then(response => response.text())
+      .then(data => pTag.innerHTML = data)
+    }        
+
+  div.body#dynamicContent
+    button.button(type="button" name="getMyStrom" onclick="getData();") Get Panel Data
+    button.button(type="button" name="writeToIota" onclick="doIota();") Write to Iota
+    button.button(type="button" name="writeToIota" onclick="getIota();") Get Iota
+
+  div.body#goBack
+    a(href="/") index

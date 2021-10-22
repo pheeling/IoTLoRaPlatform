@@ -1,44 +1,21 @@
-async function run(data) {
+const express = require('express')
+const app = express()
+const port = 3000
+const iotaWriteRead = require('./app/Models/iotaWriteRead');
 
-    const { ClientBuilder } = require('@iota/client');
+app.get('/', (req, res) => {
+    res.send('Hello, running IOTA in the console! And getting Data to the Tangle')
+    iotaWriteRead.mystrom().then(data => iotaWriteRead.writeData(data));
+})
 
-    // client will connect to testnet by default
-    const client = new ClientBuilder()
-        .localPow(true)
-        .build();
+app.get('/getData', (req, res) => {
+    //res.send(new Date().toString() + ' Collected Data to console')
+    //https://stackoverflow.com/questions/37602748/updating-data-realtime-in-node-js-express-website
+    iotaWriteRead.getMessageId().then(result => 
+        res.send(result)
+    );
+})
 
-    client.getInfo().then(console.log).catch(console.error);
-    
-    const tips = await client.getTips();
-    // const message_metadata = await client.getMessage().metadata(tips[0]);
-    const message_metadata = await client.getMessage().metadata("1e31ce59adf99710d99ee27e4511ee86af334f7d5c26513391742ae4a4ff6d3d")
-    if(message_metadata.isSolid == true){
-      console.log(message_metadata);
-      var message = await client.message()
-      .index(message_metadata.messageId)
-      .data(data)
-      .submit();
-      console.log(message)
-    } else {
-      console.log("no solid message");
-    }   
-}
-
-async function mystrom () {
-  return new Promise(function(resolve, reject) {
-    const request = require('request');
-    var options = {
-      'method': 'GET',
-      'url': 'http://myStrom-Switch-43F2B8/report',
-      'headers': {
-      }
-    };
-    request(options, function (error, response) {
-      if (error) throw new Error(error);
-      console.log(response.body);
-      resolve(response.body)
-    });
-  });
-};
-
-mystrom().then(data => run(data))
+app.listen(port, () => {
+    console.log(`App listening at http://localhost:${port}`)
+})
