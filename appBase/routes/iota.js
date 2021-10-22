@@ -19,8 +19,16 @@ router.get('/sub', function(req, res, next) {
 });
 
 router.get('/writeToIota', function(req, res, next) {
-  iota.mystrom().then(response => {
-    iota.writeData(response)  });
+  iota.mystrom()
+  .then(response => 
+    iota.writeData(response.body))
+    .then(response =>
+      res.send(response))
+});
+
+router.get('/getIotaData', function(req, res, next) {
+  iota.getMessageId().then(response => 
+    res.send(response)  );
 });
 
 module.exports = router;

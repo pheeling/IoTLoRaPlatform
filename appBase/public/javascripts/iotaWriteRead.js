@@ -8,6 +8,7 @@ const got = require('got');
 
 async function writeData(data) {
 
+    var response = ''
     const { ClientBuilder } = require('@iota/client');
 
     // client will connect to testnet by default
@@ -26,17 +27,21 @@ async function writeData(data) {
       .data(data)
       .submit();
       console.log(message)
+      response = "solid message"
     } else {
       console.log("no solid message");
     }   
 
+    // maybe implement to get data from fs back: https://www.geeksforgeeks.org/how-to-operate-callback-based-fs-appendfile-method-with-promises-in-node-js/
     fs.appendFile(filepathMessageId, message_metadata.messageId + "\r\n", function (err) {
       if (err) {
         console.log(err)
       } else {
         console.log('successfully added messageId')
+        response = "successfully added " + message_metadata.messageId
       }
     })
+    return response
 }
 
 async function mystrom() {
@@ -61,7 +66,7 @@ async function getData(messageId){
 
 async function getMessage(messageId, client){
     const message_data = await client.getMessage().raw(messageId)
-    let regex = /{.*}/g;
+    let regex = /{\".*}/g;
     const found = message_data.match(regex);
     console.log(found);
     return found
@@ -70,7 +75,7 @@ async function getMessage(messageId, client){
 async function getMessageId(){
   return new Promise(function(resolve, reject) {
     const dataArray = new Array
-    fs.readFile(filepath, 'utf8', function (err,data) {
+    fs.readFile(filepathMessageId, 'utf8', function (err,data) {
       if (err) {
         console.log(err);
         reject(err);
