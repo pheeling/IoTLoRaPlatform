@@ -28,7 +28,7 @@ router.get('/writeToIota', function(req, res, next) {
 
 router.get('/getIotaData', function(req, res, next) {
   iota.getMessageId().then(response => 
-    res.send(response)  );
+    res.send(response))
 });
 
 module.exports = router;

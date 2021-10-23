@@ -56,20 +56,20 @@ async function getData(messageId){
 
   const message_index = await client.getMessage().index(messageId);
   const messages = new Array;
-  console.log(message_index);
+  // console.log(message_index);
 
   message_index.forEach(element => {
     messages.push(getMessage(element, client))
   });
-  return messages
+  return messages.toString()
 }
 
 async function getMessage(messageId, client){
     const message_data = await client.getMessage().raw(messageId)
     let regex = /{\".*}/g;
     const found = message_data.match(regex);
-    console.log(found);
-    return found
+    //console.log(found.toString());
+    return found.toString()
 }
 
 async function getMessageId(){
@@ -80,7 +80,7 @@ async function getMessageId(){
         console.log(err);
         reject(err);
       } else {
-        console.log(data);
+        // console.log(data);
         const lines = data.split(/\r?\n/);
         lines.forEach(element => {
           if(element.length > 0){
