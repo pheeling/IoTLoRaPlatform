@@ -12,12 +12,14 @@ router.get('/', function(req, res, next) {
     });
 });
 
+/* Update with current value */
 router.get('/sub', function(req, res, next) {
   iota.mystrom().then(response => {
     res.send(response.body)
   });
 });
 
+/* Write data to IOTA Tangle. */
 router.get('/writeToIota', function(req, res, next) {
   iota.mystrom()
   .then(response => 
@@ -26,8 +28,9 @@ router.get('/writeToIota', function(req, res, next) {
       res.send(response))
 });
 
+/* Retrieve written data. */
 router.get('/getIotaData', function(req, res, next) {
-  iota.getMessageId().then(response => 
+  iota.getIotaData().then(response => 
     res.send(response))
 });
 

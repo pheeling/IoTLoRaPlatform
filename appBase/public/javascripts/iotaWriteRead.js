@@ -1,10 +1,16 @@
 const fs = require('fs');
+const util = require('util');
 const { resolve } = require('path');
 const filepathMessageId = 'log/messageIds.txt'
 const filepathMeter = 'log/MeterData.txt'
 const messageIdArray = new Array;
 const solarMeterUrl = 'http://myStrom-Switch-43F2B8/report'
 const got = require('got');
+const { getegid } = require('process');
+const dataArrayResultIota = new Array
+
+// Convert fs.readFile into Promise version of same    
+const readFile = util.promisify(fs.readFile);
 
 async function writeData(data) {
 
@@ -48,49 +54,51 @@ async function mystrom() {
   return await got(solarMeterUrl)
 };
 
-async function getData(messageId){
-  const { ClientBuilder } = require('@iota/client');
+async function getData(messageIds){
+    const { ClientBuilder } = require('@iota/client');
 
-  // client will connect to testnet by default
-  const client = new ClientBuilder().build();
+    // client will connect to testnet by default
+    const client = new ClientBuilder().build();
+    var results = new Array
+    results = await messageIds.map(async element => {
+      try{
+        var message_index = await client.getMessage().index(element);
+        let result = await getMessage(message_index[0],client)
+        return result
+      }
+      catch (err){
+        console.log(err)
+      }
+    });
 
-  const message_index = await client.getMessage().index(messageId);
-  const messages = new Array;
-  // console.log(message_index);
-
-  message_index.forEach(element => {
-    messages.push(getMessage(element, client))
-  });
-  return messages.toString()
+    return Promise.all(results)
 }
 
 async function getMessage(messageId, client){
     const message_data = await client.getMessage().raw(messageId)
     let regex = /{\".*}/g;
     const found = message_data.match(regex);
-    //console.log(found.toString());
     return found.toString()
 }
 
-async function getMessageId(){
-  return new Promise(function(resolve, reject) {
-    const dataArray = new Array
-    fs.readFile(filepathMessageId, 'utf8', function (err,data) {
-      if (err) {
-        console.log(err);
-        reject(err);
-      } else {
-        // console.log(data);
-        const lines = data.split(/\r?\n/);
-        lines.forEach(element => {
-          if(element.length > 0){
-            dataArray.push(getData(element))
-          }
-        });
-        resolve(dataArray)
-      }
-    });
-  });
+function getContents() {
+  try {
+    return readFile(filepathMessageId, 'utf8');
+  }
+  catch (err){
+    console.log(err)
+  }
 }
 
-module.exports = { getData, writeData, mystrom, getMessageId}
+async function getIotaData(){
+  try {
+    let messages = await getContents()
+    let iotaReturns = getData(messages.split(/\r?\n/))
+    return iotaReturns
+  }
+  catch (err){
+    console.log(err)
+  } 
+}
+
+module.exports = { getData, writeData, mystrom, getIotaData }
