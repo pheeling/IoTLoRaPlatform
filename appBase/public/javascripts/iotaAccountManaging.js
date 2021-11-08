@@ -28,6 +28,7 @@ function savePassword(PlainTextPassword){
 }
 
 function compareHash(PlainTextPassword){
+    //TODO Read .env File and compare password
     bcrypt.compare(PlainTextPassword, hash, function(err, result) {
         return result
     });

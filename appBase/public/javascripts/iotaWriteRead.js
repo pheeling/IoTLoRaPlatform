@@ -39,6 +39,7 @@ async function writeData(data) {
     }   
 
     // maybe implement to get data from fs back: https://www.geeksforgeeks.org/how-to-operate-callback-based-fs-appendfile-method-with-promises-in-node-js/
+    //TODO Response send to return
     fs.appendFile(filepathMessageId, message_metadata.messageId + "\r\n", function (err) {
       if (err) {
         console.log(err)
