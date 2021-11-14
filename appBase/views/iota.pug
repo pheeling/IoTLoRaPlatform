@@ -24,6 +24,7 @@ block content
     }
 
     function getIota(){
+      let result
       var pathname = window.location.pathname;
       fetch(pathname + "/getIotaData")
       .then(response => response.text())
