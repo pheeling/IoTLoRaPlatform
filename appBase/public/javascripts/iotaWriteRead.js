@@ -52,7 +52,12 @@ async function writeData(data) {
 }
 
 async function mystrom() {
-  return await got(solarMeterUrl)
+  try{
+    return await got(solarMeterUrl)
+  } catch (e) {
+    console.log(e)
+    return '{"name": no panel,"data": no data}'
+  }
 };
 
 async function getData(messageIds){

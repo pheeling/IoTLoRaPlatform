@@ -34,16 +34,18 @@ async function createDB(dbname,password) {
 }
 
 async function createAccount(dbname,accountName,password){
-    const { AccountManager } = require('@iota/wallet');
+    const { AccountManager,SignerType  } = require('@iota/wallet');
  
     const manager = new AccountManager({
         storagePath: filepathIotaData + dbname + '-database',
     });
 
+    // comparison doesn't work
     let result = await compareHash(password)
-    if(result == true){
+    if(result == 1){
         try {
             manager.setStrongholdPassword(password);
+            // account creation doesn't work
             let account;
             try {
                 account = manager.getAccount(accountName);
@@ -61,13 +63,51 @@ async function createAccount(dbname,accountName,password){
                     alias: accountName,
                 });
                 console.log('Account created:', account.id());
-
-                const synced = await account.sync();
-                console.log('Synced account', synced);
             }
+    
+            const synced = await account.sync();
+            console.log('Synced account', synced);
         } catch (error) {
             console.log('Error: ' + error);
         }
+    }
+}
+
+async function createAddress(dbname,accountName,password) {
+    const { AccountManager } = require('@iota/wallet');
+    
+    const manager = new AccountManager({
+        storagePath: filepathIotaData + dbname + '-database',
+    });
+
+    manager.setStrongholdPassword(password);
+
+    try {
+        account = manager.getAccount(accountName);
+        console.log('Account:', account.alias());
+
+        // Always sync before doing anything with the account
+        await account.sync();
+        console.log('Syncing...');
+        
+        const address = account.generateAddress();
+        console.log('New address:', address);
+        
+        // You can also get the latest unused address:
+        const addressObject = account.latestAddress();
+        console.log('Address:', addressObject.address);
+        
+        // Use the Chrysalis Faucet to send testnet tokens to your address:
+        
+        console.log(
+            'Fill your address with the Faucet: https://faucet.chrysalis-devnet.iota.cafe/',
+        );
+        
+        const addresses = account.listAddresses();
+        console.log('Addresses:', addresses);
+
+    } catch (e) {
+        console.log(e);
     }
 }
 
@@ -87,13 +127,13 @@ function savePassword(PlainTextPassword){
 }
 
 async function compareHash(PlainTextPassword){
-    let filecontent = await readFile(filepathEnvFile)
-    let parsedFile = envfile.parse(filecontent)
-    bcrypt.compare(PlainTextPassword, parsedFile.SH_PASSWORD, function(err, result) {
-        console.log(result)
-        return result
-    });
-
+    try {
+        let filecontent = await readFile(filepathEnvFile)
+        let parsedFile = envfile.parse(filecontent)
+        return await bcrypt.compare(PlainTextPassword, parsedFile.SH_PASSWORD)
+    } catch (e) {
+        console.log(e)
+    }
 }
 
-module.exports = { compareHash, savePassword, createDB, createAccount}
+module.exports = { compareHash, savePassword, createDB, createAccount, createAddress}
