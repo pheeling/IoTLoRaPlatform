@@ -36,5 +36,13 @@ block content
     button.button(type="button" name="writeToIota" onclick="doIota();") Write to Iota
     button.button(type="button" name="writeToIota" onclick="getIota();") Get Iota
 
+  div.body#passwordForm
+    body
+      form(action='/iota/savePassword', method='POST')
+        p
+          | password: 
+          input(type='text', name='password', value='')
+          input(type='submit', value='Submit')
+
   div.body#goBack
     a(href="/") index

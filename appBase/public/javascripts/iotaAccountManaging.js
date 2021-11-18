@@ -35,17 +35,14 @@ async function createDB(dbname,password) {
 
 async function createAccount(dbname,accountName,password){
     const { AccountManager,SignerType  } = require('@iota/wallet');
- 
     const manager = new AccountManager({
         storagePath: filepathIotaData + dbname + '-database',
     });
 
-    // comparison doesn't work
     let result = await compareHash(password)
     if(result == 1){
         try {
             manager.setStrongholdPassword(password);
-            // account creation doesn't work
             let account;
             try {
                 account = manager.getAccount(accountName);
@@ -105,7 +102,7 @@ async function createAddress(dbname,accountName,password) {
         
         const addresses = account.listAddresses();
         console.log('Addresses:', addresses);
-
+        return await addresses
     } catch (e) {
         console.log(e);
     }
@@ -119,6 +116,7 @@ function savePassword(PlainTextPassword){
             parsedFile.SH_PASSWORD = hash
             writeFile(filepathEnvFile, envfile.stringify(parsedFile))
             console.log("saved hash")
+            return "saved hash"
           }
           catch (err){
             console.log(err)
@@ -136,4 +134,65 @@ async function compareHash(PlainTextPassword){
     }
 }
 
-module.exports = { compareHash, savePassword, createDB, createAccount, createAddress}
+async function listAddresses(dbname,accountName,password){
+    const { AccountManager } = require('@iota/wallet');
+    
+    const manager = new AccountManager({
+        storagePath: filepathIotaData + dbname + '-database',
+    });
+
+    manager.setStrongholdPassword(password);
+
+    try {
+        account = manager.getAccount(accountName);
+        console.log('Account:', account.alias());
+
+        // Always sync before doing anything with the account
+        await account.sync();
+        console.log('Syncing...');
+
+        const addresses = account.listAddresses();
+        console.log('Addresses:', addresses);
+        return addresses
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+function sendValue(value, account, address){
+    
+}
+
+async function checkBalance(dbname,password, accountName){
+    const { AccountManager } = require('@iota/wallet');
+    
+    const manager = new AccountManager({
+        storagePath: filepathIotaData + dbname + '-database',
+    });
+
+    manager.setStrongholdPassword(password);
+
+    try {
+        account = manager.getAccount(accountName);
+        console.log('Account:', account.alias());
+
+        // Always sync before doing anything with the account
+        await account.sync();
+        console.log('Syncing...');
+        console.log('Available balance', account.balance().available);
+
+        return account.balance().available
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+function backupWallet(){
+
+}
+
+function calculateWattToIota(watthour){
+    // to create
+}
+
+module.exports = { compareHash, savePassword, createDB, createAccount, createAddress, listAddresses, checkBalance}
