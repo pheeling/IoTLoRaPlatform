@@ -6,11 +6,9 @@ const pug = require('pug');
 var iota = require('../public/javascripts/iotaWriteRead');
 var iotaAccount = require ('../public/javascripts/iotaAccountManaging');
 
-/* GET solarMeterData listing. */
+/* GET iota main side. */
 router.get('/', function(req, res, next) {
-    iota.mystrom().then(response => {
-      res.render('iota', { title: 'IoTa', dataField: response.body})
-    });
+    res.render('iota', { title: 'IoTa', dataField: ""})
 });
 
 /* Update with current value */
@@ -38,12 +36,14 @@ router.get('/getIotaData', function(req, res, next) {
 /* save DB password, keep password always protected */
 router.post('/savePassword', function(req, res, next) {
   response = {
+    dbname : req.body.dbname,
+    accountName : req.body.accountName,
     password : req.body.password,
   };
   console.log(response);
   //iotaAccount.savePassword(response.password)
   // redirect doesn't work, goal would be to post and redirected to iota page for further updates
-  res.redirect(200,"/iota")
+  res.redirect("/iota")
 });
 
 // app.use('/iota/createDB', iotaRouter);

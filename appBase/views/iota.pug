@@ -39,9 +39,9 @@ block content
   div.body#passwordForm
     body
       form(action='/iota/savePassword', method='POST')
-        p
-          | password: 
-          input(type='text', name='password', value='')
+          input(type='text', name="dbname", value="", placeholder="Enter dbname")
+          input(type='text', name='accountName', value='', placeholder="Enter accountName")
+          input(type='password', name='password', value='', placeholder="Enter password")
           input(type='submit', value='Submit')
 
   div.body#goBack

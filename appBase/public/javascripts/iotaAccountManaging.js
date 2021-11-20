@@ -163,7 +163,7 @@ function sendValue(value, account, address){
     
 }
 
-async function checkBalance(dbname,password, accountName){
+async function checkBalance(dbname,accountName, password){
     const { AccountManager } = require('@iota/wallet');
     
     const manager = new AccountManager({
