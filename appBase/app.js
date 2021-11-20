@@ -25,6 +25,11 @@ app.use('/users', usersRouter);
 app.use('/iota', iotaRouter);
 app.use('/iota/sub', iotaRouter);
 app.use('/iota/writeToIota', iotaRouter);
+app.use('/iota/savePassword', iotaRouter);
+app.use('/iota/createDB', iotaRouter);
+app.use('/iota/createAccount', iotaRouter);
+app.use('/iota/listAddresses', iotaRouter);
+app.use('/iota/checkBalance', iotaRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

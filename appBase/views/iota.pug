@@ -24,7 +24,6 @@ block content
     }
 
     function getIota(){
-      let result
       var pathname = window.location.pathname;
       fetch(pathname + "/getIotaData")
       .then(response => response.text())
@@ -32,13 +31,13 @@ block content
     }        
 
   div.body#dynamicContent
-    button.button(type="button" name="getMyStrom" onclick="getData();") Get Panel Data
-    button.button(type="button" name="writeToIota" onclick="doIota();") Write to Iota
-    button.button(type="button" name="writeToIota" onclick="getIota();") Get Iota
+    button(type="button" name="getMyStrom" onclick="getData();") Get Panel Data
+    button(type="button" name="writeToIota" onclick="doIota();") Write to Iota
+    button(type="button" name="writeToIota" onclick="getIota();") Get Iota
 
   div.body#passwordForm
     body
-      form(action='/iota/savePassword', method='POST')
+      form(action='/iota/listAddresses', method='POST')
           input(type='text', name="dbname", value="", placeholder="Enter dbname")
           input(type='text', name='accountName', value='', placeholder="Enter accountName")
           input(type='password', name='password', value='', placeholder="Enter password")
