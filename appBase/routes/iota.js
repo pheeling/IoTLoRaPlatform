@@ -34,7 +34,7 @@ router.get('/getIotaData', function(req, res, next) {
 });
 
 /* save DB password, keep password always protected */
-router.post('/savePassword', function(req, res, next) {
+router.post('/listAddresses', function(req, res, next) {
   response = {
     dbname : req.body.dbname,
     accountName : req.body.accountName,
