@@ -41,9 +41,11 @@ router.post('/listAddresses', function(req, res, next) {
     password : req.body.password,
   };
   console.log(response);
-  //iotaAccount.savePassword(response.password)
+  iotaAccount.listAddresses(response.dbname,response.accountName,response.password)
+  .then(result => 
+    res.render('iota', { title: 'IoTa', dataField: JSON.stringify(result)}))
   // redirect doesn't work, goal would be to post and redirected to iota page for further updates
-  res.redirect("/iota")
+  //res.redirect("/iota")
 });
 
 // app.use('/iota/createDB', iotaRouter);

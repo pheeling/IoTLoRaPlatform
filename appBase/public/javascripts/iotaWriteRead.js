@@ -13,7 +13,7 @@ const dataArrayResultIota = new Array
 const readFile = util.promisify(fs.readFile);
 
 async function writeData(data) {
-
+  try{
     var response = ''
     const { ClientBuilder } = require('@iota/client');
 
@@ -49,6 +49,9 @@ async function writeData(data) {
       }
     })
     return response
+  } catch (e){
+    console.log(e)
+  }  
 }
 
 async function mystrom() {
@@ -56,7 +59,7 @@ async function mystrom() {
     return await got(solarMeterUrl)
   } catch (e) {
     console.log(e)
-    return '{"name": no panel,"data": no data}'
+    return JSON.parse('{"body": [{"name": "no panel","data": "no data"}]}')
   }
 };
 
