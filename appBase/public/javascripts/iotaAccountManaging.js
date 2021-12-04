@@ -77,35 +77,37 @@ async function createAddress(dbname,accountName,password) {
         storagePath: filepathIotaData + dbname + '-database',
     });
 
-    manager.setStrongholdPassword(password);
+    let result = await compareHash(password)
+    if(result == 1){
+        try {
+            manager.setStrongholdPassword(password);
+            account = manager.getAccount(accountName);
+            console.log('Account:', account.alias());
+            
+                // Always sync before doing anything with the account
+                await account.sync();
+                console.log('Syncing...');
 
-    try {
-        account = manager.getAccount(accountName);
-        console.log('Account:', account.alias());
+                const address = account.generateAddress();
+                console.log('New address:', address);
 
-        // Always sync before doing anything with the account
-        await account.sync();
-        console.log('Syncing...');
-        
-        const address = account.generateAddress();
-        console.log('New address:', address);
-        
-        // You can also get the latest unused address:
-        const addressObject = account.latestAddress();
-        console.log('Address:', addressObject.address);
-        
-        // Use the Chrysalis Faucet to send testnet tokens to your address:
-        
-        console.log(
-            'Fill your address with the Faucet: https://faucet.chrysalis-devnet.iota.cafe/',
-        );
-        
-        const addresses = account.listAddresses();
-        console.log('Addresses:', addresses);
-        return await addresses
-    } catch (e) {
-        console.log(e);
-    }
+                // You can also get the latest unused address:
+                const addressObject = account.latestAddress();
+                console.log('Address:', addressObject.address);
+
+                // Use the Chrysalis Faucet to send testnet tokens to your address:
+
+                console.log(
+                    'Fill your address with the Faucet: https://faucet.chrysalis-devnet.iota.cafe/',
+                );
+                
+                const addresses = account.listAddresses();
+                console.log('Addresses:', addresses);
+                return await addresses
+        } catch (e) {
+            console.log(e);
+        }
+    }   
 }
 
 function savePassword(PlainTextPassword){
@@ -134,14 +136,12 @@ async function compareHash(PlainTextPassword){
     }
 }
 
-async function listAddresses(dbname,accountName,password){
+async function listAddresses(dbname,accountName){
     const { AccountManager } = require('@iota/wallet');
     
     const manager = new AccountManager({
         storagePath: filepathIotaData + dbname + '-database',
     });
-
-    manager.setStrongholdPassword(password);
 
     try {
         account = manager.getAccount(accountName);
@@ -163,14 +163,12 @@ function sendValue(value, account, address){
     
 }
 
-async function checkBalance(dbname,accountName, password){
+async function checkBalance(dbname,accountName){
     const { AccountManager } = require('@iota/wallet');
     
     const manager = new AccountManager({
         storagePath: filepathIotaData + dbname + '-database',
     });
-
-    manager.setStrongholdPassword(password);
 
     try {
         account = manager.getAccount(accountName);

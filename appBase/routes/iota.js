@@ -33,7 +33,7 @@ router.get('/getIotaData', function(req, res, next) {
     res.send(response))
 });
 
-/* save DB password, keep password always protected */
+/* Retrieve addresses*/
 router.post('/listAddresses', function(req, res, next) {
   response = {
     dbname : req.body.dbname,
@@ -41,7 +41,7 @@ router.post('/listAddresses', function(req, res, next) {
     password : req.body.password,
   };
   console.log(response);
-  iotaAccount.listAddresses(response.dbname,response.accountName,response.password)
+  iotaAccount.listAddresses(response.dbname,response.accountName)
   .then(result => 
     res.render('iota', { title: 'IoTa', dataField: JSON.stringify(result)}))
   // redirect doesn't work, goal would be to post and redirected to iota page for further updates

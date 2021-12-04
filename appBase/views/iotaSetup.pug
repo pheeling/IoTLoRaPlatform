@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+
+  p#dataField #{dataField} results
+
+  div.body#passwordForm
+    body
+      form(action='/setupDBandAccount', method='POST')
+          input(type='text', name="dbname", value="", placeholder="Enter dbname")
+          input(type='text', name='accountName', value='', placeholder="Enter accountName")
+          input(type='password', name='password', value='', placeholder="Enter password")
+          input(type='submit', value='Submit')
