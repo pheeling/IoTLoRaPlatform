@@ -51,6 +51,7 @@ async function writeData(data) {
     return response
   } catch (e){
     console.log(e)
+    return "Error see console output"
   }  
 }
 
