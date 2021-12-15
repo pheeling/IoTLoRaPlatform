@@ -1,3 +1,7 @@
+// modules for wattcalculation
+const iota = require('./iotaWriteRead');
+
+// standard modules
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
 const util = require('util');
@@ -189,8 +193,19 @@ function backupWallet(){
 
 }
 
-function calculateWattToIota(watthour){
-    // to create
+async function calculateWattToIota(){
+    try{ 
+        let datamap = await iota.getIotaData()
+        datamap.forEach(element => {
+            var data = JSON.parse(element)
+            console.log(data.power + " ws")
+            //TODO: Integrate fix energy price from elcom as file
+            // select kategory and take total as price per kwh. calculate watt
+            // write to iota.
+        });
+    } catch (e) {
+        console.log(e)
+    }   
 }
 
-module.exports = { compareHash, savePassword, createDB, createAccount, createAddress, listAddresses, checkBalance}
+module.exports = { compareHash, savePassword, createDB, createAccount, createAddress, listAddresses, checkBalance, calculateWattToIota}
