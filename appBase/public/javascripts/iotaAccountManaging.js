@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const fs = require('fs');
 const util = require('util');
 const filepathEnvFile = 'config/.env'
+const elcomDataCsv = 'config/elcom-data-2022.csv'
 const envfile = require('envfile');
 const saltRounds = 10;
 
@@ -14,6 +15,40 @@ const readFile = util.promisify(fs.readFile);
 const writeFile = util.promisify(fs.writeFile);
 const appendFile = util.promisify(fs.appendFile);
 const envParseFile = util.promisify(envfile.parse)
+
+// dependency calculateWatt to parse CSV File
+const {parse} = require('csv-parse');
+var elcomDataObject = null;
+
+class ElcomData {
+    constructor(period,operator,operatorLabel,category,product,aidfee,fixcosts,charge,gridusage,energy,total) {
+      this.period = period;
+      this.operator = operator;
+      this.operatorLabel = operatorLabel;
+      this.category = category;
+      this.product = product;
+      this.aidfee = aidfee;
+      this.fixcosts = fixcosts;
+      this.charge = charge;
+      this.gridusage = gridusage;
+      this.energy = energy;
+      this.total = total;
+    }
+}
+
+const processData = (err, data) => {
+    if (err) {
+      console.log(`An error was encountered: ${err}`);
+      return;
+    }
+  
+    data.shift(); // only required if csv has heading row
+  
+    elcomDataObject = data.map(row => new ElcomData(...row));
+}
+
+fs.createReadStream(elcomDataCsv)
+  .pipe(parse({ delimiter: ',' }, processData));
 
 // iota Account Manager dependency
 require('dotenv').config();
@@ -200,6 +235,7 @@ async function calculateWattToIota(){
             var data = JSON.parse(element)
             console.log(data.power + " ws")
             //TODO: Integrate fix energy price from elcom as file
+            // go through file https://blog.harveydelaney.com/parsing-a-csv-file-using-node-javascript/
             // select kategory and take total as price per kwh. calculate watt
             // write to iota.
         });
@@ -207,5 +243,7 @@ async function calculateWattToIota(){
         console.log(e)
     }   
 }
+
+
 
 module.exports = { compareHash, savePassword, createDB, createAccount, createAddress, listAddresses, checkBalance, calculateWattToIota}
