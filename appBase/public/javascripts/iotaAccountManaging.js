@@ -231,14 +231,14 @@ function backupWallet(){
 
 }
 
-async function calculateWattToIota(category, product, operator){
+async function calculateWattToIota(operator, category, product){
     try{
         let datamap = await iota.getIotaData()
         datamap.forEach(element => {
             var data = JSON.parse(element)
             console.log(data.power + " ws")
             //TODO: select element elcomdataobject based on category, product, operator
-            // go through file https://blog.harveydelaney.com/parsing-a-csv-file-using-node-javascript/
+            // go through file https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
             // select kategory and take total as price per kwh. calculate watt
             // write to iota.
         });
