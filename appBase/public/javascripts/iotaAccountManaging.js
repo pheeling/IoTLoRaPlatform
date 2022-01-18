@@ -19,6 +19,16 @@ const envParseFile = util.promisify(envfile.parse)
 // dependency calculateWatt to parse CSV File
 const {parse} = require('csv-parse');
 var elcomDataObject = null;
+const processData = async (err, data) => {
+    if (err) {
+      console.log(`An error was encountered: ${err}`);
+      return;
+    }
+  
+    data.shift(); // only required if csv has heading row
+  
+    elcomDataObject = await data.map(row => new ElcomData(...row));
+}
 
 class ElcomData {
     constructor(period,operator,operatorLabel,category,product,aidfee,fixcosts,charge,gridusage,energy,total) {
@@ -36,19 +46,12 @@ class ElcomData {
     }
 }
 
-const processData = (err, data) => {
-    if (err) {
-      console.log(`An error was encountered: ${err}`);
-      return;
-    }
-  
-    data.shift(); // only required if csv has heading row
-  
-    elcomDataObject = data.map(row => new ElcomData(...row));
+async function loadElcomData (){
+    var readStream = fs.createReadStream(elcomDataCsv)
+    readStream.on('open', function () {
+        readStream.pipe(parse({ delimiter: ',' }, processData));
+    });
 }
-
-fs.createReadStream(elcomDataCsv)
-  .pipe(parse({ delimiter: ',' }, processData));
 
 // iota Account Manager dependency
 require('dotenv').config();
@@ -228,13 +231,13 @@ function backupWallet(){
 
 }
 
-async function calculateWattToIota(){
-    try{ 
+async function calculateWattToIota(category, product, operator){
+    try{
         let datamap = await iota.getIotaData()
         datamap.forEach(element => {
             var data = JSON.parse(element)
             console.log(data.power + " ws")
-            //TODO: Integrate fix energy price from elcom as file
+            //TODO: select element elcomdataobject based on category, product, operator
             // go through file https://blog.harveydelaney.com/parsing-a-csv-file-using-node-javascript/
             // select kategory and take total as price per kwh. calculate watt
             // write to iota.
@@ -246,4 +249,4 @@ async function calculateWattToIota(){
 
 
 
-module.exports = { compareHash, savePassword, createDB, createAccount, createAddress, listAddresses, checkBalance, calculateWattToIota}
+module.exports = { compareHash, savePassword, createDB, createAccount, createAddress, listAddresses, checkBalance, calculateWattToIota, loadElcomData}
