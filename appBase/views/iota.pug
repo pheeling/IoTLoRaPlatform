@@ -56,6 +56,36 @@ block content
       })
     }
 
+    function getEarnings(){
+      var pathname = window.location.pathname;
+      var update = 0
+      progress(10)
+      fetch(pathname + "/getIotaDataEarnings")
+      .then(response => {
+        progress(50)
+        return response.json()
+      })
+      .then(data => {
+        progress(100)
+        pTag.innerHTML = JSON.stringify(data)
+      })
+    }
+
+    function writeEarnings(){
+      var pathname = window.location.pathname;
+      var update = 0
+      progress(10)
+      fetch(pathname + "/writeEarningsToIota")
+      .then(response => {
+        progress(50)
+        return response.text()
+      })
+      .then(data => {
+        progress(100)
+        pTag.innerHTML = data
+      })
+    }
+
     function progress(progress) {
       var current_progress = progress;
       var $ = document.getElementById.bind(document)
@@ -84,7 +114,9 @@ block content
   div.body#dynamicContent
     button(type="button" name="getMyStrom" onclick="getData();") Get Panel Data
     button(type="button" name="writeToIota" onclick="doIota();") Write to Iota
-    button(type="button" name="writeToIota" onclick="getIota();") Get Iota
+    button(type="button" name="getProduction" onclick="getIota();") Get Iota
+    button(type="button" name="writeEarningsToIota" onclick="writeEarnings();") Write Earnings to Iota
+    button(type="button" name="getEarningsFromIota" onclick="getEarnings();") Get Earnings from Iota
 
   div.body#passwordForm
     body

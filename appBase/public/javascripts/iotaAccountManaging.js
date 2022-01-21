@@ -241,16 +241,22 @@ async function calculateWattToIota(){
     try{
         var elcomDataObject = await processFile();
         var result = elcomDataObject.filter(filterItems)
+        var calculatoryPriceTotalkwh = await result.reduce((previousValue, currentValue) => 
+            (parseFloat(previousValue.total) + parseFloat(currentValue.total))/result.length
+        );
+        
         let datamap = await iota.getIotaData()
+        let messagesId = (await iota.getContentsEnergyProduction()).split(/\r?\n/)
+        counter = 0
         datamap.forEach(element => {
             var data = JSON.parse(element)
-            console.log(data.power * result)
-            //TODO: select element elcomdataobject based on category, product, operator
-            // Currently two elements delivered select one
-            // go through file https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
-            // select kategory and take total as price per kwh. calculate watt
-            // write to iota.
+            let earnings = parseFloat(data.Ws) * calculatoryPriceTotalkwh/3600000
+            let message = '{"Rp/Ws_Produced": "' + earnings + '" ,"source_message_id": "' + messagesId[counter] + '"}'
+            let jsonMessage = JSON.parse(message)
+            console.log(jsonMessage)
+            iota.writeDataEarnings(jsonMessage)
         });
+        return "Successfully uploaded earnings"
     } catch (e) {
         console.log(e)
     }   

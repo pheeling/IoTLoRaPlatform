@@ -27,10 +27,23 @@ router.get('/writeToIota', function(req, res, next) {
       res.send(response))
 });
 
-/* Retrieve written data. */
+/* Retrieve written data Production. */
 router.get('/getIotaData', function(req, res, next) {
   iota.getIotaData().then(response => 
     res.send(response))
+});
+
+/* Retrieve written Earnings. */
+router.get('/getIotaDataEarnings', function(req, res, next) {
+  iota.getIotaDataEarnings().then(response => 
+    res.send(response))
+});
+
+/* Write Earnings to IOTA Tangle. */
+router.get('/writeEarningsToIota', function(req, res, next) {
+  iotaAccount.calculateWattToIota()
+  .then(response => 
+      res.send(response))
 });
 
 /* Retrieve addresses*/
