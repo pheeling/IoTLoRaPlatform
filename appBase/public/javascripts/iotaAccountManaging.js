@@ -18,17 +18,24 @@ const envParseFile = util.promisify(envfile.parse)
 
 // dependency calculateWatt to parse CSV File
 const {parse} = require('csv-parse');
-var elcomDataObject = null;
-const processData = async (err, data) => {
-    if (err) {
-      console.log(`An error was encountered: ${err}`);
-      return;
-    }
-  
-    data.shift(); // only required if csv has heading row
-  
-    elcomDataObject = await data.map(row => new ElcomData(...row));
-}
+const { finished } = require('stream/promises');
+
+const processFile = async () => {
+    const records = [];
+    const parser = fs
+      .createReadStream(elcomDataCsv)
+      .pipe(parse({ delimiter: ',' }));
+    parser.on('readable', function(){
+      let record; 
+      while ((record = parser.read()) !== null) {
+      // Work with each record
+      var temp = new ElcomData(...record)
+        records.push(temp);
+      }
+    });
+    await finished(parser);
+    return records;
+};
 
 class ElcomData {
     constructor(period,operator,operatorLabel,category,product,aidfee,fixcosts,charge,gridusage,energy,total) {
@@ -44,13 +51,6 @@ class ElcomData {
       this.energy = energy;
       this.total = total;
     }
-}
-
-async function loadElcomData (){
-    var readStream = fs.createReadStream(elcomDataCsv)
-    readStream.on('open', function () {
-        readStream.pipe(parse({ delimiter: ',' }, processData));
-    });
 }
 
 // iota Account Manager dependency
@@ -231,13 +231,22 @@ function backupWallet(){
 
 }
 
-async function calculateWattToIota(operator, category, product){
+function filterItems(element){
+    return element.operator == 486 &&
+         element.category == "H4" &&
+         element.product == "standard";
+}
+
+async function calculateWattToIota(){
     try{
+        var elcomDataObject = await processFile();
+        var result = elcomDataObject.filter(filterItems)
         let datamap = await iota.getIotaData()
         datamap.forEach(element => {
             var data = JSON.parse(element)
-            console.log(data.power + " ws")
+            console.log(data.power * result)
             //TODO: select element elcomdataobject based on category, product, operator
+            // Currently two elements delivered select one
             // go through file https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
             // select kategory and take total as price per kwh. calculate watt
             // write to iota.
@@ -249,4 +258,4 @@ async function calculateWattToIota(operator, category, product){
 
 
 
-module.exports = { compareHash, savePassword, createDB, createAccount, createAddress, listAddresses, checkBalance, calculateWattToIota, loadElcomData}
+module.exports = { compareHash, savePassword, createDB, createAccount, createAddress, listAddresses, checkBalance, calculateWattToIota } //, loadElcomData}
