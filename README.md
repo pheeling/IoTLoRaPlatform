@@ -10,7 +10,7 @@ The grid owner will be able to distinguish which system produced how much energy
 1. Writing / receiving information from the tangle via message payloads : done
 2. Store information via messageId for later retrieval : partially done (simple file solution, could be extended as db)
 3. Calculate approximated energy value based on energy production : done
-4. Write energy production earnings back to IOTA, referenced by source messageId energy production record.
+4. Write energy production earnings back to IOTA, referenced by source messageId energy production record : done
 5. Signed transaction
 6. Send earnings as IOTA token to wallet
 7. Get Wallet data
