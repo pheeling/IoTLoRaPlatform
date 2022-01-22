@@ -255,6 +255,7 @@ async function calculateWattToIota(){
             let message = '{"Rp/Ws_Produced": "' + earnings + '" ,"source_message_id": "' + messagesId[counter] + '"}'
             console.log(message)
             iota.writeDataEarnings(message)
+            counter = counter + 1
         });
         response = "Successfully uploaded earnings"
         return response
