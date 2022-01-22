@@ -25,6 +25,7 @@ Any feedback is appreciated. Just branch and update the code.
 
 solar, energy production, IOTA, decentralied energy, small energy prodction site
 
-
+# Design Idea
+![System Overview](/images/System Overview.png?raw=true "System Overview")
 
 
