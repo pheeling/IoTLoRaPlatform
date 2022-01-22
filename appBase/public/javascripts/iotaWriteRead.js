@@ -2,7 +2,7 @@ const fs = require('fs');
 const util = require('util');
 const { resolve } = require('path');
 const filepathMessageId = 'log/messageIds.txt'
-const filepathMeter = 'log/MeterData.txt'
+const filepathMeter = 'log/meterData.txt'
 const messageIdArray = new Array;
 const solarMeterUrl = 'http://myStrom-Switch-43F2B8/report'
 const got = require('got');
@@ -13,7 +13,7 @@ const dataArrayResultIota = new Array
 const readFile = util.promisify(fs.readFile);
 
 async function writeData(data) {
-
+  try{
     var response = ''
     const { ClientBuilder } = require('@iota/client');
 
@@ -39,6 +39,7 @@ async function writeData(data) {
     }   
 
     // maybe implement to get data from fs back: https://www.geeksforgeeks.org/how-to-operate-callback-based-fs-appendfile-method-with-promises-in-node-js/
+    //TODO Response send to return
     fs.appendFile(filepathMessageId, message_metadata.messageId + "\r\n", function (err) {
       if (err) {
         console.log(err)
@@ -48,10 +49,62 @@ async function writeData(data) {
       }
     })
     return response
+  } catch (e){
+    console.log(e)
+    return "Error see console output"
+  }  
+}
+
+async function writeDataEarnings(data) {
+  try{
+    var response = ''
+    const { ClientBuilder } = require('@iota/client');
+
+    // client will connect to testnet by default
+    const client = new ClientBuilder()
+        .localPow(true)
+        .build();
+
+    client.getInfo().then(console.log).catch(console.error);
+    
+    const tips = await client.getTips();
+    const message_metadata = await client.getMessage().metadata(tips[0]);
+    if(message_metadata.isSolid == true){
+      console.log(message_metadata);
+      var message = await client.message()
+      .index(message_metadata.messageId)
+      .data(data)
+      .submit();
+      console.log(message)
+      response = "solid message"
+    } else {
+      console.log("no solid message");
+    }   
+
+    // maybe implement to get data from fs back: https://www.geeksforgeeks.org/how-to-operate-callback-based-fs-appendfile-method-with-promises-in-node-js/
+    //TODO Response send to return
+    fs.appendFile(filepathMeter, message_metadata.messageId + "\r\n", function (err) {
+      if (err) {
+        console.log(err)
+      } else {
+        console.log('successfully added messageId')
+        response = "successfully added " + message_metadata.messageId
+      }
+    })
+    return response
+  } catch (e){
+    console.log(e)
+    return "Error see console output"
+  }  
 }
 
 async function mystrom() {
-  return await got(solarMeterUrl)
+  try{
+    return await got(solarMeterUrl)
+  } catch (e) {
+    console.log(e)
+    return JSON.parse('{"body": [{"name": "no panel","data": "no data"}]}')
+  }
 };
 
 async function getData(messageIds){
@@ -81,7 +134,7 @@ async function getMessage(messageId, client){
     return found.toString()
 }
 
-function getContents() {
+function getContentsEnergyProduction() {
   try {
     return readFile(filepathMessageId, 'utf8');
   }
@@ -92,7 +145,7 @@ function getContents() {
 
 async function getIotaData(){
   try {
-    let messages = await getContents()
+    let messages = await getContentsEnergyProduction()
     let iotaReturns = getData(messages.split(/\r?\n/))
     return iotaReturns
   }
@@ -101,4 +154,24 @@ async function getIotaData(){
   } 
 }
 
-module.exports = { getData, writeData, mystrom, getIotaData }
+function getContentsEarnings() {
+  try {
+    return readFile(filepathMeter, 'utf8');
+  }
+  catch (err){
+    console.log(err)
+  }
+}
+
+async function getIotaDataEarnings(){
+  try {
+    let messages = await getContentsEarnings()
+    let iotaReturns = getData(messages.split(/\r?\n/))
+    return iotaReturns
+  }
+  catch (err){
+    console.log(err)
+  } 
+}
+
+module.exports = { getData, writeData, mystrom, getIotaData, getIotaDataEarnings, writeDataEarnings, getContentsEnergyProduction}

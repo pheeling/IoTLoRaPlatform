@@ -4,36 +4,123 @@ block content
   h1= title
   p Welcome to #{title}
 
+  div.progress
+    div#dynamicBar(class="progress-bar active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%")
+      span#current-progress
+
   p#dataField #{dataField} results
 
   script.
     var pTag = document.getElementById("dataField");
 
     function getData(){
+      progress(10)
       var pathname = window.location.pathname;
       fetch(pathname + "/sub")
-      .then(response => response.json())
-      .then(data => pTag.innerHTML = JSON.stringify(data))
+      .then(response => {
+        progress(50)
+        return response.json()
+      })
+      .then(data => {
+        progress(100)
+        pTag.innerHTML = JSON.stringify(data)
+      })
     }
 
     function doIota(){
+      progress(10)
       var pathname = window.location.pathname;
       fetch(pathname + "/writeToIota")
-      .then(response => response.text())
-      .then(data => pTag.innerHTML = data)
+      .then(response => {
+        progress(50)
+        return response.text()
+      })
+      .then(data => {
+        progress(100)
+        pTag.innerHTML = data
+      })
     }
 
     function getIota(){
       var pathname = window.location.pathname;
+      var update = 0
+      progress(10)
       fetch(pathname + "/getIotaData")
-      .then(response => response.text())
-      .then(data => pTag.innerHTML = data)
-    }        
+      .then(response => {
+        progress(50)
+        return response.text()
+      })
+      .then(data => {
+        progress(100)
+        pTag.innerHTML = data
+      })
+    }
+
+    function getEarnings(){
+      var pathname = window.location.pathname;
+      var update = 0
+      progress(10)
+      fetch(pathname + "/getIotaDataEarnings")
+      .then(response => {
+        progress(50)
+        return response.text()
+      })
+      .then(data => {
+        progress(100)
+        pTag.innerHTML = data
+      })
+    }
+
+    function writeEarnings(){
+      var pathname = window.location.pathname;
+      var update = 0
+      progress(10)
+      fetch(pathname + "/writeEarningsToIota")
+      .then(response => {
+        progress(50)
+        return response.text()
+      })
+      .then(data => {
+        progress(100)
+        pTag.innerHTML = data
+      })
+    }
+
+    function progress(progress) {
+      var current_progress = progress;
+      var $ = document.getElementById.bind(document)
+      $("dynamicBar").style.width = current_progress + "%"
+      $("dynamicBar").ariavaluenow = current_progress
+      $("dynamicBar").text = current_progress + "% Complete"
+    }
+
+    // TODO: make a start / Stop interval setup
+    // progress starts with function call and adds to it until stop is execute
+    // stop will set progress to 100 and clearintervall
+    // hint: https://www.w3schools.com/jsref/met_win_setinterval.asp
+    //- function progress() {
+    //-   var current_progress = 0;
+    //-   var interval = setInterval(function() {
+    //-       current_progress += 10;
+    //-       var $ = document.getElementById.bind(document)
+    //-       $("dynamicBar").style.width = current_progress + "%"
+    //-       $("dynamicBar").ariavaluenow = current_progress
+    //-       $("dynamicBar").text = current_progress + "% Complete"
+    //-       if (current_progress >= 100)
+    //-           clearInterval(interval);
+    //-   }, 1000);
+    //- } 
 
   div.body#dynamicContent
-    button.button(type="button" name="getMyStrom" onclick="getData();") Get Panel Data
-    button.button(type="button" name="writeToIota" onclick="doIota();") Write to Iota
-    button.button(type="button" name="writeToIota" onclick="getIota();") Get Iota
+    button(type="button" name="getMyStrom" onclick="getData();") Get Panel Data
+    button(type="button" name="writeToIota" onclick="doIota();") Write to Iota
+    button(type="button" name="getProduction" onclick="getIota();") Get Iota
+    button(type="button" name="writeEarningsToIota" onclick="writeEarnings();") Write Earnings to Iota
+    button(type="button" name="getEarningsFromIota" onclick="getEarnings();") Get Earnings from Iota
 
-  div.body#goBack
-    a(href="/") index
+  div.body#passwordForm
+    body
+      form(action='/iota/listAddresses', method='POST')
+          input(type='text', name="dbname", value="", placeholder="Enter dbname")
+          input(type='text', name='accountName', value='', placeholder="Enter accountName")
+          input(type='submit', value='Submit')
