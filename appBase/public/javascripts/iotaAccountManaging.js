@@ -238,6 +238,7 @@ function filterItems(element){
 }
 
 async function calculateWattToIota(){
+    // TODO: Response not displayed on frontend
     try{
         var elcomDataObject = await processFile();
         var result = elcomDataObject.filter(filterItems)
@@ -252,11 +253,11 @@ async function calculateWattToIota(){
             var data = JSON.parse(element)
             let earnings = parseFloat(data.Ws) * calculatoryPriceTotalkwh/3600000
             let message = '{"Rp/Ws_Produced": "' + earnings + '" ,"source_message_id": "' + messagesId[counter] + '"}'
-            let jsonMessage = JSON.parse(message)
-            console.log(jsonMessage)
-            iota.writeDataEarnings(jsonMessage)
+            console.log(message)
+            iota.writeDataEarnings(message)
         });
-        return "Successfully uploaded earnings"
+        response = "Successfully uploaded earnings"
+        return response
     } catch (e) {
         console.log(e)
     }   

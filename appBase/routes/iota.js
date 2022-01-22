@@ -43,7 +43,7 @@ router.get('/getIotaDataEarnings', function(req, res, next) {
 router.get('/writeEarningsToIota', function(req, res, next) {
   iotaAccount.calculateWattToIota()
   .then(response => 
-      res.send(response))
+    res.send(response))
 });
 
 /* Retrieve addresses*/

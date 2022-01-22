@@ -63,11 +63,11 @@ block content
       fetch(pathname + "/getIotaDataEarnings")
       .then(response => {
         progress(50)
-        return response.json()
+        return response.text()
       })
       .then(data => {
         progress(100)
-        pTag.innerHTML = JSON.stringify(data)
+        pTag.innerHTML = data
       })
     }
 
