@@ -11,10 +11,16 @@ const dataArrayResultIota = new Array
 
 // Convert fs.readFile into Promise version of same    
 const readFile = util.promisify(fs.readFile);
+const appendFile = util.promisify(fs.appendFile);
 
 async function writeData(data) {
   try{
-    var response = ''
+    const appendDataToFile = async (path, data) => {
+      await appendFile(path, data)
+      response.push("successfully added " + data)
+    }
+
+    var response = []
     const { ClientBuilder } = require('@iota/client');
 
     // client will connect to testnet by default
@@ -33,21 +39,19 @@ async function writeData(data) {
       .data(data)
       .submit();
       console.log(message)
-      response = "solid message"
+      response.push("solid message")
     } else {
       console.log("no solid message");
-    }   
-
-    // maybe implement to get data from fs back: https://www.geeksforgeeks.org/how-to-operate-callback-based-fs-appendfile-method-with-promises-in-node-js/
-    //TODO Response send to return
-    fs.appendFile(filepathMessageId, message_metadata.messageId + "\r\n", function (err) {
-      if (err) {
-        console.log(err)
-      } else {
-        console.log('successfully added messageId')
-        response = "successfully added " + message_metadata.messageId
-      }
+    }
+    
+    await appendDataToFile(filepathMessageId, 
+    message_metadata.messageId + "\r\n")
+      .catch(err => {
+      console.log(`Error Occurs, 
+      Error code -> ${err.code}, 
+      Error NO -> ${err.errno}`)
     })
+
     return response
   } catch (e){
     console.log(e)
@@ -57,7 +61,10 @@ async function writeData(data) {
 
 async function writeDataEarnings(data) {
   try{
-    var response = ''
+    const appendDataToFile = async (path, data) => {
+      appendFile(path, data)
+    }
+    var response = []
     const { ClientBuilder } = require('@iota/client');
 
     // client will connect to testnet by default
@@ -76,21 +83,20 @@ async function writeDataEarnings(data) {
       .data(data)
       .submit();
       console.log(message)
-      response = "solid message"
+      response.push("solid message")
     } else {
       console.log("no solid message");
     }   
 
-    // maybe implement to get data from fs back: https://www.geeksforgeeks.org/how-to-operate-callback-based-fs-appendfile-method-with-promises-in-node-js/
-    //TODO Response send to return
-    fs.appendFile(filepathMeter, message_metadata.messageId + "\r\n", function (err) {
-      if (err) {
-        console.log(err)
-      } else {
-        console.log('successfully added messageId')
-        response = "successfully added " + message_metadata.messageId
-      }
+    // TODO: Send meaningful Output to Frontend
+    appendDataToFile(filepathMeter, 
+    message_metadata.messageId + "\r\n")
+      .catch(err => {
+      console.log(`Error Occurs, 
+      Error code -> ${err.code}, 
+      Error NO -> ${err.errno}`)
     })
+
     return response
   } catch (e){
     console.log(e)
