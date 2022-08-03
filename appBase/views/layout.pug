@@ -7,11 +7,16 @@ html
     script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
     script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js")
   body
+    block header
+      img(src='/images/android-chrome-192x192.png', alt="join the community", width="50", height="50")
+      h2 Join our movement
+
     block content
 
-    div.body#navigation
-    a(href="/") index
-    br
-    a(href="/iota") iota
-    br
-    a(href="/iotaSetup") iota Setup
+    block footer
+      div.body#navigation
+        a(href="/") index 
+        pfooter |
+        a(href="/iota") iota
+        pfooter |
+        a(href="/iotaSetup") iota Setup

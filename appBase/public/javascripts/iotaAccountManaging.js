@@ -257,7 +257,7 @@ async function calculateWattToIota(){
             iota.writeDataEarnings(message)
             counter = counter + 1
         });
-        response = "Successfully uploaded earnings"
+        var response = "Successfully uploaded earnings"
         return response
     } catch (e) {
         console.log(e)

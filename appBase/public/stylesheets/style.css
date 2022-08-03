@@ -7,6 +7,14 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+button:hover{
+  background-color:rgb(195, 236, 198);
+}
+
+button:focus{
+  background-color:rgb(255, 140, 0);
+}
+
 .progress {
   margin: 10px;
   width: 700px;
@@ -25,6 +33,11 @@ p {
   padding: 12px;
   line-height: auto;
   line-break: auto;
+}
+
+pfooter {
+  color: #00000077;
+  padding: 12px;
 }
 
 button, input[type=submit] {
@@ -55,3 +68,46 @@ input[type=password], input[type=text] {
   width: auto;
   height: auto;
 }
+
+#navigation{
+  border: #00000077;
+  cursor: pointer;
+  width: auto;
+  background: #f2f2f2;
+  padding: 12px;
+  color: #00000077;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-size: medium;
+  height: auto;
+  margin: 3px;
+}
+
+#dynamicContent{
+  border: #00000077;
+  cursor: pointer;
+  width: auto;
+  padding: 12px;
+  color: #00000077;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-size: medium;
+  height:min(max-content, max(min-content, 20%));
+  min-height:300px;
+  max-height:1000px;
+  margin: 3px;
+}
+
+#passwordForm{
+  border: #00000077;
+  cursor: pointer;
+  width: auto;
+  padding: 12px;
+  color: #00000077;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-size: medium;
+  height:min(max-content, max(min-content, 20%));
+  min-height:50px;
+  max-height:200px;
+  margin: 3px;
+}
+
+

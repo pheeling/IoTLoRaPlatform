@@ -6,7 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "@iota/client": "^2.1.0",
+    "@iota/client": "^2.2.0",
     "@iota/wallet": "^1.0.2",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.4",
@@ -22,6 +22,7 @@
     "node-gyp": "^8.4.1",
     "prebuild-install": "^6.1.4",
     "pug": "^3.0.1",
+    "serve-favicon": "^2.5.0",
     "util": "^0.12.4"
   }
 }
