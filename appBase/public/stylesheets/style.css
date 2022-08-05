@@ -69,7 +69,7 @@ input[type=password], input[type=text] {
   height: auto;
 }
 
-#navigation{
+header{
   border: #00000077;
   cursor: pointer;
   width: auto;
@@ -80,6 +80,8 @@ input[type=password], input[type=text] {
   font-size: medium;
   height: auto;
   margin: 3px;
+  position: sticky;
+  top: 0
 }
 
 #dynamicContent{

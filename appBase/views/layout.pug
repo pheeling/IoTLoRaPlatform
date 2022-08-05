@@ -7,16 +7,20 @@ html
     script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
     script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js")
   body
+    header
+      img(src='/images/android-chrome-192x192.png', alt="join the community", width="25", height="25") 
+      pfooter 
+      a(href="/") index 
+      pfooter |
+      a(href="/iota") iota
+      pfooter |
+      a(href="/iotaSetup") iota Setup
+    br
+
     block header
-      img(src='/images/android-chrome-192x192.png', alt="join the community", width="50", height="50")
       h2 Join our movement
 
     block content
 
     block footer
-      div.body#navigation
-        a(href="/") index 
-        pfooter |
-        a(href="/iota") iota
-        pfooter |
-        a(href="/iotaSetup") iota Setup
+      pfooter contact: https://github.com/pheeling/IoTLoRaPlatform

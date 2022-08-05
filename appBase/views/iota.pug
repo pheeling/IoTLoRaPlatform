@@ -1,5 +1,7 @@
 extends layout
 
+block header
+
 block content
 
   div.progress
@@ -115,8 +117,7 @@ block content
     button(type="button" name="getProduction" onclick="getIota();") Get Iota
     button(type="button" name="writeEarningsToIota" onclick="writeEarnings();") Write Earnings to Iota
     button(type="button" name="getEarningsFromIota" onclick="getEarnings();") Get Earnings from Iota
-
-  div.body#passwordForm
+    br
     body
       form(action='/iota/listAddresses', method='POST')
           input(type='text', name="dbname", value="", placeholder="Enter dbname")
