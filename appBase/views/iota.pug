@@ -112,14 +112,26 @@ block content
     //- } 
 
   div.body#dynamicContent
-    button(type="button" name="getMyStrom" onclick="getData();") Get Panel Data
-    button(type="button" name="writeToIota" onclick="doIota();") Write to Iota
-    button(type="button" name="getProduction" onclick="getIota();") Get Iota
-    button(type="button" name="writeEarningsToIota" onclick="writeEarnings();") Write Earnings to Iota
-    button(type="button" name="getEarningsFromIota" onclick="getEarnings();") Get Earnings from Iota
-    br
-    body
-      form(action='/iota/listAddresses', method='POST')
-          input(type='text', name="dbname", value="", placeholder="Enter dbname")
-          input(type='text', name='accountName', value='', placeholder="Enter accountName")
-          input(type='submit', value='Submit')
+    table(style='width:100%', border='1', padding='2')
+      tr
+        td
+          p IOTA testnet
+        td
+          p interact with tangle 
+          button(type="button" name="getMyStrom" onclick="getData();") Get Panel Data
+          button(type="button" name="writeToIota" onclick="doIota();") Write to Iota
+          button(type="button" name="getProduction" onclick="getIota();") Get Iota
+          button(type="button" name="writeEarningsToIota" onclick="writeEarnings();") Write Earnings to Iota
+          button(type="button" name="getEarningsFromIota" onclick="getEarnings();") Get Earnings from Iota
+          br
+          p list addresses 
+          body
+            form(action='/iota/listAddresses', method='POST')
+              input(type='text', name="dbname", value="", placeholder="Enter dbname")
+              input(type='text', name='accountName', value='', placeholder="Enter accountName")
+              input(type='submit', value='Submit')
+      tr
+        td
+          p Shimmer Testnet
+        td
+          p shimmer functions

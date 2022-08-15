@@ -4,6 +4,7 @@ const pug = require('pug');
 
 // personal modules
 var iota = require('../public/javascripts/iotaWriteRead');
+var mystrom = require('../public/javascripts/myStrom');
 var iotaAccount = require ('../public/javascripts/iotaAccountManaging');
 
 /* GET iota main side. */
@@ -13,14 +14,14 @@ router.get('/', function(req, res, next) {
 
 /* Update with current value */
 router.get('/sub', function(req, res, next) {
-  iota.mystrom().then(response => {
+  mystrom.getReport().then(response => {
     res.send(response.body)
   });
 });
 
 /* Write data to IOTA Tangle. */
 router.get('/writeToIota', function(req, res, next) {
-  iota.mystrom()
+  mystrom.getReport()
   .then(response => 
     iota.writeData(response.body))
     .then(response =>

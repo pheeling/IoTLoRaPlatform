@@ -3,11 +3,7 @@ const util = require('util');
 const { resolve } = require('path');
 const filepathMessageId = 'log/messageIds.txt'
 const filepathMeter = 'log/meterData.txt'
-const messageIdArray = new Array;
-const solarMeterUrl = 'http://myStrom-Switch-43F2B8/report'
-const got = require('got');
 const { getegid } = require('process');
-const dataArrayResultIota = new Array
 
 // Convert fs.readFile into Promise version of same    
 const readFile = util.promisify(fs.readFile);
@@ -104,15 +100,6 @@ async function writeDataEarnings(data) {
   }  
 }
 
-async function mystrom() {
-  try{
-    return await got(solarMeterUrl)
-  } catch (e) {
-    console.log(e)
-    return JSON.parse('{"body": [{"name": "no panel","data": "no data"}]}')
-  }
-};
-
 async function getData(messageIds){
     const { ClientBuilder } = require('@iota/client');
 
@@ -180,4 +167,4 @@ async function getIotaDataEarnings(){
   } 
 }
 
-module.exports = { getData, writeData, mystrom, getIotaData, getIotaDataEarnings, writeDataEarnings, getContentsEnergyProduction}
+module.exports = { getData, writeData, getIotaData, getIotaDataEarnings, writeDataEarnings, getContentsEnergyProduction}
