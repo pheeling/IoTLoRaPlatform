@@ -5,6 +5,7 @@ const util = require('util');
 const elcomDataCsv = 'config/elcom-data-2022.csv'
 const envfile = require('envfile');
 const saltRounds = 10;
+var path = require('path');
 
 // Convert fs.readFile, fs.writeFile, envfile.parse / readfile,writefile,envParseFile into Promise version of same    
 const readFile = util.promisify(fs.readFile);
@@ -13,14 +14,15 @@ const appendFile = util.promisify(fs.appendFile);
 const envParseFile = util.promisify(envfile.parse)
 
 // iota Shimmer Account Manager dependency
-const filepathIotaData = 'config/shimmer'
-const filepathEnvFile = filepathIotaData + '/.env'
-const { AccountManager } = require('@iota/wallet');
+const filepathIotaData = path.join(__dirname, '..','..','config', 'shimmer');
+const filepathEnvFile = filepathIotaData + '\\.env'
+const { AccountManager, CoinType } = require('@iota/wallet');
 require('dotenv').config( { path: filepathEnvFile});
+var cryptfunctions = require ('./hashing');
 
-async function createAccount(accountName) {
+async function createAccount(accountName,dbname) {
     try {
-        const manager = await createAccountManager();
+        const manager = await getUnlockedManager(dbname);
 
         const account = await manager.createAccount({
             alias: accountName,
@@ -34,11 +36,11 @@ async function createAccount(accountName) {
 //TODO: How to deal with env File. 
 // Goal is to have only a hashed version available and compare it to the user input
 
-async function compareHash(PlainTextPassword){
+async function getEnvFile(){
     try {
         let filecontent = await readFile(filepathEnvFile)
         let parsedFile = envfile.parse(filecontent)
-        return await bcrypt.compare(PlainTextPassword, parsedFile.SH_PASSWORD)
+        return parsedFile
     } catch (e) {
         console.log(e)
     }
@@ -46,7 +48,9 @@ async function compareHash(PlainTextPassword){
 
 async function createAccountManager(dbname,password) {
     try {
-        let result = await compareHash(password)
+        //TODO: Compare doesn't work... 
+        let parsedFile = await getEnvFile()
+        let result = await cryptfunctions.compareHash(password, parsedFile.SH_PASSWORD)
         if(result == 1){
             const accountManagerOptions = {
                 storagePath: filepathIotaData + dbname + '-database',
@@ -69,14 +73,40 @@ async function createAccountManager(dbname,password) {
                 console.log('Mnemonic:', mnemonic),
                 manager.verifyMnemonic(mnemonic))
                 .then( () => 
-                    manager.storeMnemonic(mnemonic)) 
-
+                    manager.storeMnemonic(mnemonic))
+                    this.savePassword(mnemonic)           
             return manager;
+        } else {
+            console.log("Password wrong")
         }
     } catch (error) {
         console.log('Error: ', error);
     }
 }
 
-module.exports = { createAccountManager, createAccount}
+function savePassword(plaintext){
+    bcrypt.hash(plaintext, saltRounds, function(err, hash) {
+        try {
+            //https://stackoverflow.com/questions/53360535/how-to-save-changes-in-env-file-in-node-js
+            let parsedFile = envParseFile(filepathEnvFile);
+            parsedFile.MNEMONIC = hash
+            writeFile(filepathEnvFile, envfile.stringify(parsedFile))
+            console.log("saved mnemonic in file")
+            return "saved mnemonic in file"
+          }
+          catch (err){
+            console.log(err)
+          }
+    });
+}
+
+async function getUnlockedManager(dbname) {
+    const manager = new AccountManager({
+        storagePath: filepathIotaData + dbname + '-database',
+    });
+    await manager.setStrongholdPassword(process.env.SH_PASSWORD);
+    return manager;
+}
+
+module.exports = { createAccountManager, createAccount, getUnlockedManager, savePassword}
 
