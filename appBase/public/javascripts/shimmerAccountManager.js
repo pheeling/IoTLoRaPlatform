@@ -47,8 +47,8 @@ async function getEnvFile(){
 }
 
 async function createAccountManager(dbname,password) {
-    try {
-        //TODO: Compare doesn't work... 
+    try { 
+        //TODO: Cointype not imported because probably npm package version not correct. Which version is needed for shimmer?
         let parsedFile = await getEnvFile()
         let result = await cryptfunctions.compareHash(password, parsedFile.SH_PASSWORD)
         if(result == 1){
@@ -85,7 +85,7 @@ async function createAccountManager(dbname,password) {
 }
 
 function savePassword(plaintext){
-    bcrypt.hash(plaintext, saltRounds, function(err, hash) {
+    bcrypt.hashSync(plaintext, saltRounds, function(err, hash) {
         try {
             //https://stackoverflow.com/questions/53360535/how-to-save-changes-in-env-file-in-node-js
             let parsedFile = envParseFile(filepathEnvFile);
@@ -93,11 +93,11 @@ function savePassword(plaintext){
             writeFile(filepathEnvFile, envfile.stringify(parsedFile))
             console.log("saved mnemonic in file")
             return "saved mnemonic in file"
-          }
-          catch (err){
+        }
+        catch (err){
             console.log(err)
-          }
-    });
+        }
+    })
 }
 
 async function getUnlockedManager(dbname) {
