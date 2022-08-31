@@ -48,7 +48,8 @@ async function getEnvFile(){
 
 async function createAccountManager(dbname,password) {
     try { 
-        //TODO: Cointype not imported because probably npm package version not correct. Which version is needed for shimmer?
+        //TODO: Cointype not imported because probably npm package version not correct. Or initialization doesn't work
+        // Which version is needed for shimmer?
         let parsedFile = await getEnvFile()
         let result = await cryptfunctions.compareHash(password, parsedFile.SH_PASSWORD)
         if(result == 1){
@@ -58,7 +59,7 @@ async function createAccountManager(dbname,password) {
                     nodes: ['https://api.testnet.shimmer.network'],
                     localPow: true,
                 },
-                coinType: CoinType.Shimmer,
+                //coinType: CoinType.Shimmer,
                 secretManager: {
                     Stronghold: {
                         snapshotPath: filepathIotaData + '/wallet.stronghold',
@@ -66,7 +67,7 @@ async function createAccountManager(dbname,password) {
                     },
                 },
             };
-            const manager = new AccountManager(accountManagerOptions);
+            const manager = new AccountManager(accountManagerOptions)
 
             const mnemonic = await manager.generateMnemonic()
             .then( () => 
