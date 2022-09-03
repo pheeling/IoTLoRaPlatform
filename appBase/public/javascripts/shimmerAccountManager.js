@@ -48,34 +48,32 @@ async function getEnvFile(){
 
 async function createAccountManager(dbname,password) {
     try { 
-        //TODO: Cointype not imported because probably npm package version not correct. Or initialization doesn't work
-        // Which version is needed for shimmer?
         let parsedFile = await getEnvFile()
         let result = await cryptfunctions.compareHash(password, parsedFile.SH_PASSWORD)
         if(result == 1){
             const accountManagerOptions = {
-                storagePath: filepathIotaData + dbname + '-database',
+                storagePath: filepathIotaData + '/' + dbname + '-database',
                 clientOptions: {
                     nodes: ['https://api.testnet.shimmer.network'],
                     localPow: true,
                 },
-                //coinType: CoinType.Shimmer,
+                coinType: CoinType.Shimmer,
                 secretManager: {
                     Stronghold: {
-                        snapshotPath: filepathIotaData + '/wallet.stronghold',
+                        snapshotPath: filepathIotaData + '/' + dbname + '-wallet.stronghold',
                         password: `${password}`,
                     },
                 },
             };
             const manager = new AccountManager(accountManagerOptions)
 
+            await manager.setStrongholdPassword(password);
+
             const mnemonic = await manager.generateMnemonic()
-            .then( () => 
-                console.log('Mnemonic:', mnemonic),
-                manager.verifyMnemonic(mnemonic))
-                .then( () => 
-                    manager.storeMnemonic(mnemonic))
-                    this.savePassword(mnemonic)           
+            console.log('Mnemonic:', mnemonic)
+            await manager.verifyMnemonic(mnemonic)
+            await manager.storeMnemonic(mnemonic)
+            await this.savePassword(mnemonic)           
             return manager;
         } else {
             console.log("Password wrong")
@@ -85,9 +83,10 @@ async function createAccountManager(dbname,password) {
     }
 }
 
-function savePassword(plaintext){
+async function savePassword(plaintext){
     bcrypt.hashSync(plaintext, saltRounds, function(err, hash) {
         try {
+            //TODO: write mnemonic to file
             //https://stackoverflow.com/questions/53360535/how-to-save-changes-in-env-file-in-node-js
             let parsedFile = envParseFile(filepathEnvFile);
             parsedFile.MNEMONIC = hash
