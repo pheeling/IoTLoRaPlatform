@@ -20,9 +20,9 @@ const { AccountManager, CoinType } = require('@iota/wallet');
 require('dotenv').config( { path: filepathEnvFile});
 var cryptfunctions = require ('./hashing');
 
-async function createAccount(accountName,dbname) {
+async function createAccount(manager, accountName) {
     try {
-        const manager = await getUnlockedManager(dbname);
+        //const manager = await getUnlockedManager(dbname);
 
         const account = await manager.createAccount({
             alias: accountName,
@@ -32,9 +32,6 @@ async function createAccount(accountName,dbname) {
         console.log('Error: ', error);
     }
 }
-
-//TODO: How to deal with env File. 
-// Goal is to have only a hashed version available and compare it to the user input
 
 async function getEnvFile(){
     try {
@@ -84,29 +81,32 @@ async function createAccountManager(dbname,password) {
 }
 
 async function savePassword(plaintext){
-    bcrypt.hashSync(plaintext, saltRounds, function(err, hash) {
-        try {
-            //TODO: write mnemonic to file
-            //https://stackoverflow.com/questions/53360535/how-to-save-changes-in-env-file-in-node-js
-            let parsedFile = envParseFile(filepathEnvFile);
-            parsedFile.MNEMONIC = hash
-            writeFile(filepathEnvFile, envfile.stringify(parsedFile))
-            console.log("saved mnemonic in file")
-            return "saved mnemonic in file"
-        }
-        catch (err){
-            console.log(err)
-        }
-    })
+    try {
+        var hash = bcrypt.hashSync(plaintext, saltRounds)
+        let filecontent = await readFile(filepathEnvFile) 
+        let parsedFile = envfile.parse(filecontent);
+        parsedFile.MNEMONIC = hash
+        fs.writeFileSync(filepathEnvFile, envfile.stringify(parsedFile))
+        console.log("saved mnemonic in file")
+    } catch (err){
+        console.log(err)
+    }
 }
 
 async function getUnlockedManager(dbname) {
+    //TODO: Check If unlockedManager works to get Account etc after Lock is released.
     const manager = new AccountManager({
-        storagePath: filepathIotaData + dbname + '-database',
+        storagePath: filepathIotaData + '/' + dbname + '-database',
+        clientOptions: {
+            nodes: ['https://api.testnet.shimmer.network'],
+            localPow: true,
+        }
     });
     await manager.setStrongholdPassword(process.env.SH_PASSWORD);
     return manager;
 }
+
+//TODO: Generate addresses
 
 module.exports = { createAccountManager, createAccount, getUnlockedManager, savePassword}
 
