@@ -93,7 +93,7 @@ async function savePassword(plaintext){
     }
 }
 
-async function getUnlockedManager(dbname) {
+async function getUnlockedManager(dbname, strongholdPassword) {
     //TODO: Check If unlockedManager works to get Account etc after Lock is released.
     const manager = new AccountManager({
         storagePath: filepathIotaData + '/' + dbname + '-database',
@@ -102,11 +102,53 @@ async function getUnlockedManager(dbname) {
             localPow: true,
         }
     });
-    await manager.setStrongholdPassword(process.env.SH_PASSWORD);
+    await manager.setStrongholdPassword(strongholdPassword);
     return manager;
 }
 
-//TODO: Generate addresses
+//TODO: manager somehow need to be exited before another call can happen. 
+//Is there a way to return data and exit the lock?
+async function createAddresses(dbname, accountName, numberOfaddresses, strongholdPassword){
+    try {
+        const manager = await getUnlockedManager(dbname, strongholdPassword);
 
-module.exports = { createAccountManager, createAccount, getUnlockedManager, savePassword}
+        const account = await manager.getAccount(accountName);
+        console.log('Account:', account);
+
+        if(!(numberOfaddresses == null)){
+            var address = await account.generateAddress(numberOfaddresses);
+            console.log('New address:', address);
+        } else {
+            var address = await account.generateAddress();
+            console.log('New address:', address);
+        }
+        // Use the Faucet to send testnet tokens to your address:
+        console.log("Fill your address with the Faucet:  https://faucet.testnet.shimmer.network")
+        return address
+    } catch (error) {
+        console.log('Error: ', error);
+    }
+}
+
+async function checkBalance(accountName, dbname, strongholdPassword) {
+    try {
+        const manager = await getUnlockedManager(dbname, strongholdPassword);
+        const account = await manager.getAccount(accountName);
+        const addressObject = await account.listAddresses();
+        console.log('Addresses before:', addressObject);
+
+        // Always sync before calling getBalance()
+        const synced = await account.sync();
+        console.log('Syncing... - ', synced);
+
+        var balance = await account.getBalance()
+        console.log('Available balance', balance);
+        return balance
+    } catch (error) {
+        console.log('Error: ', error);
+    }
+    process.exit(0);
+}
+
+module.exports = { createAccountManager, createAccount, getUnlockedManager, savePassword, createAddresses, checkBalance}
 

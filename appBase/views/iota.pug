@@ -15,8 +15,8 @@ block content
 
     function getData(){
       progress(10)
-      var pathname = window.location.pathname;
-      fetch(pathname + "/sub")
+      var pathname = '/iota/sub';
+      fetch(pathname)
       .then(response => {
         progress(50)
         return response.json()
@@ -29,8 +29,8 @@ block content
 
     function doIota(){
       progress(10)
-      var pathname = window.location.pathname;
-      fetch(pathname + "/writeToIota")
+      var pathname = '/iota/writeToIota';
+      fetch(pathname)
       .then(response => {
         progress(50)
         return response.text()
@@ -42,10 +42,10 @@ block content
     }
 
     function getIota(){
-      var pathname = window.location.pathname;
+      var pathname = '/iota/getIoTaData';
       var update = 0
       progress(10)
-      fetch(pathname + "/getIotaData")
+      fetch(pathname)
       .then(response => {
         progress(50)
         return response.text()
@@ -57,10 +57,10 @@ block content
     }
 
     function getEarnings(){
-      var pathname = window.location.pathname;
+      var pathname = '/iota/getIotaDataEarnings';
       var update = 0
       progress(10)
-      fetch(pathname + "/getIotaDataEarnings")
+      fetch(pathname)
       .then(response => {
         progress(50)
         return response.text()
@@ -72,10 +72,10 @@ block content
     }
 
     function writeEarnings(){
-      var pathname = window.location.pathname;
+      var pathname = '/iota/writeEarningsToIota';
       var update = 0
       progress(10)
-      fetch(pathname + "/writeEarningsToIota")
+      fetch(pathname)
       .then(response => {
         progress(50)
         return response.text()
@@ -134,4 +134,10 @@ block content
         td
           p Shimmer Testnet
         td
-          p shimmer functions
+          p checkBalance 
+          body
+            form(action='/iota/shimmerCheckBalance', method='POST')
+              input(type='text', name="dbname", value="", placeholder="Enter dbname")
+              input(type='text', name='accountName', value='', placeholder="Enter accountName")
+              input(type='text', name='strongholdPassword', value='', placeholder="Enter strongholdPassword")
+              input(type='submit', value='Submit')
