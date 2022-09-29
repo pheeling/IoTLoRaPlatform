@@ -5,6 +5,7 @@ const util = require('util');
 const elcomDataCsv = 'config/elcom-data-2022.csv'
 const envfile = require('envfile');
 const saltRounds = 10;
+var managerPerm;
 var path = require('path');
 
 // Convert fs.readFile, fs.writeFile, envfile.parse / readfile,writefile,envParseFile into Promise version of same    
@@ -94,7 +95,6 @@ async function savePassword(plaintext){
 }
 
 async function getUnlockedManager(dbname, strongholdPassword) {
-    //TODO: Check If unlockedManager works to get Account etc after Lock is released.
     const manager = new AccountManager({
         storagePath: filepathIotaData + '/' + dbname + '-database',
         clientOptions: {
@@ -102,12 +102,13 @@ async function getUnlockedManager(dbname, strongholdPassword) {
             localPow: true,
         }
     });
+    managerPerm = manager
     await manager.setStrongholdPassword(strongholdPassword);
+    console.log("stop")
     return manager;
 }
 
-//TODO: manager somehow need to be exited before another call can happen. 
-//Is there a way to return data and exit the lock?
+//TODO: Create NFT or native Token to represent energy production
 async function createAddresses(dbname, accountName, numberOfaddresses, strongholdPassword){
     try {
         const manager = await getUnlockedManager(dbname, strongholdPassword);
@@ -141,13 +142,15 @@ async function checkBalance(accountName, dbname, strongholdPassword) {
         const synced = await account.sync();
         console.log('Syncing... - ', synced);
 
-        var balance = await account.getBalance()
+        const balance = await account.getBalance()
         console.log('Available balance', balance);
+        managerPerm.destroy()
         return balance
     } catch (error) {
         console.log('Error: ', error);
+        managerPerm.destroy()
+        return "wrong information supplied"
     }
-    process.exit(0);
 }
 
 module.exports = { createAccountManager, createAccount, getUnlockedManager, savePassword, createAddresses, checkBalance}

@@ -34,6 +34,7 @@ app.use('/iota/createAccount', iotaRouter);
 app.use('/iota/listAddresses', iotaRouter);
 app.use('/iota/checkBalance', iotaRouter);
 app.use('/iotaSetup', iotaSetupRouter);
+app.use('/iota/shimmerCheckBalance', iotaRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
