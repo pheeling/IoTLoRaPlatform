@@ -20,6 +20,7 @@ const filepathEnvFile = filepathIotaData + '\\.env'
 const { AccountManager, CoinType } = require('@iota/wallet');
 require('dotenv').config( { path: filepathEnvFile});
 var cryptfunctions = require ('./hashing');
+const { parse } = require('path');
 
 async function createAccount(manager, accountName) {
     try {
@@ -29,8 +30,10 @@ async function createAccount(manager, accountName) {
             alias: accountName,
         });
         console.log('Account created:', account);
+        return account
     } catch (error) {
         console.log('Error: ', error);
+        return "Account creation failed"
     }
 }
 
@@ -71,44 +74,57 @@ async function createAccountManager(dbname,password) {
             console.log('Mnemonic:', mnemonic)
             await manager.verifyMnemonic(mnemonic)
             await manager.storeMnemonic(mnemonic)
-            await this.savePassword(mnemonic)           
+            // 1 = SH_PASSWORD, 2 = MNENOMIC
+            await this.savePassword(mnemonic, 2)           
             return manager;
         } else {
-            console.log("Password wrong")
+            console.log("wrong config")
+            throw "wrong config"
         }
     } catch (error) {
         console.log('Error: ', error);
     }
 }
 
-async function savePassword(plaintext){
+async function savePassword(plaintext, property){
+    // 1 = SH_PASSWORD, 2 = MNENOMIC
     try {
         var hash = bcrypt.hashSync(plaintext, saltRounds)
         let filecontent = await readFile(filepathEnvFile) 
         let parsedFile = envfile.parse(filecontent);
-        parsedFile.MNEMONIC = hash
+
+        if(property == 1){
+            parsedFile.SH_PASSWORD = hash
+        } else {
+            parsedFile.MNEMONIC = hash
+        }
         fs.writeFileSync(filepathEnvFile, envfile.stringify(parsedFile))
         console.log("saved mnemonic in file")
+        return "saved mnemonic in file"
     } catch (err){
         console.log(err)
+        return err
     }
 }
 
 async function getUnlockedManager(dbname, strongholdPassword) {
-    const manager = new AccountManager({
-        storagePath: filepathIotaData + '/' + dbname + '-database',
-        clientOptions: {
-            nodes: ['https://api.testnet.shimmer.network'],
-            localPow: true,
-        }
-    });
-    managerPerm = manager
-    await manager.setStrongholdPassword(strongholdPassword);
-    console.log("stop")
-    return manager;
+    //TODO: ManagerPerm variable release after using doesn't work stable
+    if(managerPerm == null){
+        const manager = new AccountManager({
+            storagePath: filepathIotaData + '/' + dbname + '-database',
+            clientOptions: {
+                nodes: ['https://api.testnet.shimmer.network'],
+                localPow: true,
+            }
+        });
+        managerPerm = manager
+        await manager.setStrongholdPassword(strongholdPassword);
+    } 
+    return managerPerm;
 }
 
 //TODO: Create NFT or native Token to represent energy production
+//Idea: create nft based on Report API, can only produce if nft if Ws not null.
 async function createAddresses(dbname, accountName, numberOfaddresses, strongholdPassword){
     try {
         const manager = await getUnlockedManager(dbname, strongholdPassword);
