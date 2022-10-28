@@ -11,8 +11,14 @@ block content
   p#dataField #{dataField} results
 
   div.body#dynamicContent
-    body
-      form(action='/setupDBandAccount', method='POST')
+    p write MasterPassword 
+      body
+        form(action='/shimmerIotaSetup/setMasterPassword', method='POST')
+          input(type='password', name='masterPassword', value='', placeholder="Enter masterPassword")
+          input(type='submit', value='Submit')
+    p Setup DB and Account
+      body
+        form(action='/shimmerIotaSetup/DBandAccount', method='POST')
           input(type='text', name="dbname", value="", placeholder="Enter dbname")
           input(type='text', name='accountName', value='', placeholder="Enter accountName")
           input(type='password', name='password', value='', placeholder="Enter password")

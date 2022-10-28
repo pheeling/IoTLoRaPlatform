@@ -8,7 +8,7 @@ var favicon = require('serve-favicon');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var iotaRouter = require('./routes/iota');
-var iotaSetupRouter = require('./routes/iotaSetup');
+var iotaSetupRouter = require('./routes/shimmerIotaSetup');
 
 var app = express();
 
@@ -33,7 +33,10 @@ app.use('/iota/createDB', iotaRouter);
 app.use('/iota/createAccount', iotaRouter);
 app.use('/iota/listAddresses', iotaRouter);
 app.use('/iota/checkBalance', iotaRouter);
-app.use('/iotaSetup', iotaSetupRouter);
+app.use('/shimmerIotaSetup', iotaSetupRouter);
+app.use('/shimmerIotaSetup/DBandAccount', iotaSetupRouter);
+app.use('/shimmerIotaSetup/setMasterPassword', iotaSetupRouter);
+app.use('/iota/shimmerCheckBalance', iotaRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -57,8 +57,6 @@ class ElcomData {
 require('dotenv').config();
 const filepathIotaData = 'config/'
 
-require('dotenv').config();
-
 async function createDB(dbname,password) {
     const { AccountManager } = require('@iota/wallet');
  

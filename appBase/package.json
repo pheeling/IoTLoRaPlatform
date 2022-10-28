@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@iota/client": "^2.2.0",
-    "@iota/wallet": "^1.0.2",
+    "@iota/wallet": "^2.0.2-alpha.23",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.4",
     "csv-parse": "^5.0.4",
@@ -20,6 +20,7 @@
     "morgan": "~1.9.1",
     "neon-cli": "^0.9.1",
     "node-gyp": "^8.4.1",
+    "path": "^0.12.7",
     "prebuild-install": "^6.1.4",
     "pug": "^3.0.1",
     "serve-favicon": "^2.5.0",
