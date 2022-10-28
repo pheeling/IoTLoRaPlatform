@@ -108,9 +108,8 @@ async function savePassword(plaintext, property){
 }
 
 async function getUnlockedManager(dbname, strongholdPassword) {
-    //TODO: ManagerPerm variable release after using doesn't work stable
     if(managerPerm == null){
-        const manager = new AccountManager({
+        let manager = new AccountManager({
             storagePath: filepathIotaData + '/' + dbname + '-database',
             clientOptions: {
                 nodes: ['https://api.testnet.shimmer.network'],
@@ -119,7 +118,17 @@ async function getUnlockedManager(dbname, strongholdPassword) {
         });
         managerPerm = manager
         await manager.setStrongholdPassword(strongholdPassword);
-    } 
+    } else {
+        managerPerm.destroy()
+        let manager = new AccountManager({
+            storagePath: filepathIotaData + '/' + dbname + '-database',
+            clientOptions: {
+                nodes: ['https://api.testnet.shimmer.network'],
+                localPow: true,
+            }
+        });
+        managerPerm = manager
+    }
     return managerPerm;
 }
 
