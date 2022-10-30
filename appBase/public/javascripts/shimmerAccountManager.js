@@ -29,6 +29,7 @@ async function createAccount(manager, accountName) {
         const account = await manager.createAccount({
             alias: accountName,
         });
+        manager.destroy()
         console.log('Account created:', account);
         return account
     } catch (error) {
@@ -169,11 +170,11 @@ async function checkBalance(accountName, dbname, strongholdPassword) {
 
         const balance = await account.getBalance()
         console.log('Available balance', balance);
-        managerPerm.destroy()
+        //managerPerm.destroy()
         return balance
     } catch (error) {
         console.log('Error: ', error);
-        managerPerm.destroy()
+        //managerPerm.destroy()
         return "wrong information supplied"
     }
 }
