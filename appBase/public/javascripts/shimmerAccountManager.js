@@ -170,14 +170,51 @@ async function checkBalance(accountName, dbname, strongholdPassword) {
 
         const balance = await account.getBalance()
         console.log('Available balance', balance);
-        //managerPerm.destroy()
         return balance
     } catch (error) {
         console.log('Error: ', error);
-        //managerPerm.destroy()
         return "wrong information supplied"
     }
 }
 
-module.exports = { createAccountManager, createAccount, getUnlockedManager, savePassword, createAddresses, checkBalance}
+async function mintMyStromToken(accountName, dbname, strongholdPassword){
+    try {
+        //TODO: Create token according MyStrom Schema
+        const manager = await getUnlockedManager(dbname, strongholdPassword);
+        const account = await manager.getAccount(accountName);
+        const synced = await account.sync();
+        console.log('Syncing... - ', synced);
+
+        // First create an alias output, this needs to be done only once, because an alias can have many foundry outputs.
+        let tx = await account.createAliasOutput()
+        console.log('Transaction ID: ', tx.transactionId);
+        // Wait for transaction inclusion
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        await account.sync();
+
+        //TODO: Define token schematics
+        // If we omit the AccountAddress field the first address of the account is used by default
+        const nativeTokenOptions = {
+            // Hello in bytes
+            foundryMetadata: '0x48656c6c6f',
+            circulatingSupply: '0x64',
+            maximumSupply: '0x64',
+        };
+
+        let { transaction } = await account.mintNativeToken(
+            nativeTokenOptions,
+        );
+        console.log('Transaction ID: ', transaction.transactionId);
+    } catch (error) {
+        console.log('Error: ', error);
+        return "token creation failed"
+    }
+    
+}
+
+//TODO: createMyStromToken() Calucation how many tokens represent 1 WS or 1 KWH.
+
+//TODO: sendTokenToAccount() Calucation how many tokens represent 1 WS or 1 KWH.
+
+module.exports = { createAccountManager, createAccount, getUnlockedManager, savePassword, createAddresses, checkBalance, mintMyStromToken}
 
