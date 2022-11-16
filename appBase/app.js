@@ -37,6 +37,8 @@ app.use('/shimmerIotaSetup', iotaSetupRouter);
 app.use('/shimmerIotaSetup/DBandAccount', iotaSetupRouter);
 app.use('/shimmerIotaSetup/setMasterPassword', iotaSetupRouter);
 app.use('/iota/shimmerCheckBalance', iotaRouter);
+app.use('/iota/shimmerMintNativeToken', iotaRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

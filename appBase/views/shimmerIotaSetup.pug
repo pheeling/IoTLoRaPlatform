@@ -23,3 +23,10 @@ block content
           input(type='text', name='accountName', value='', placeholder="Enter accountName")
           input(type='password', name='password', value='', placeholder="Enter password")
           input(type='submit', value='Submit')
+    p Mint your own Native Token
+      body
+        form(action='/shimmerIotaSetup/shimmerMintNativeToken', method='POST')
+          input(type='text', name="dbname", value="", placeholder="Enter dbname")
+          input(type='text', name='accountName', value='', placeholder="Enter accountName")
+          input(type='password', name='password', value='', placeholder="Enter password")
+          input(type='submit', value='Submit')

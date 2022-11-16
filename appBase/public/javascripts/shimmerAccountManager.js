@@ -159,6 +159,7 @@ async function createAddresses(dbname, accountName, numberOfaddresses, stronghol
 
 async function checkBalance(accountName, dbname, strongholdPassword) {
     try {
+        var response = []
         const manager = await getUnlockedManager(dbname, strongholdPassword);
         const account = await manager.getAccount(accountName);
         const addressObject = await account.listAddresses();
@@ -169,8 +170,10 @@ async function checkBalance(accountName, dbname, strongholdPassword) {
         console.log('Syncing... - ', synced);
 
         const balance = await account.getBalance()
+        response.push(addressObject)
+        response.push(balance)
         console.log('Available balance', balance);
-        return balance
+        return response
     } catch (error) {
         console.log('Error: ', error);
         return "wrong information supplied"
@@ -179,25 +182,27 @@ async function checkBalance(accountName, dbname, strongholdPassword) {
 
 async function mintMyStromToken(accountName, dbname, strongholdPassword){
     try {
-        //TODO: Create token according MyStrom Schema
         const manager = await getUnlockedManager(dbname, strongholdPassword);
         const account = await manager.getAccount(accountName);
         const synced = await account.sync();
         console.log('Syncing... - ', synced);
 
+        //TODO: solve issue data field missing when foundry or aliasoutput function ist called
+        
         // First create an alias output, this needs to be done only once, because an alias can have many foundry outputs.
-        let tx = await account.createAliasOutput()
+        let tx = await account.buildFoundryOutput()
         console.log('Transaction ID: ', tx.transactionId);
         // Wait for transaction inclusion
         await new Promise(resolve => setTimeout(resolve, 5000));
         await account.sync();
 
-        //TODO: Define token schematics
         // If we omit the AccountAddress field the first address of the account is used by default
         const nativeTokenOptions = {
-            // Hello in bytes
-            foundryMetadata: '0x48656c6c6f',
+            //MyStromToken in bytes hex
+            foundryMetadata: '0x4d795374726f6d546f6b656e',
+            // Supply 100 in hex
             circulatingSupply: '0x64',
+            // My Supply 100 in hex
             maximumSupply: '0x64',
         };
 
@@ -205,6 +210,7 @@ async function mintMyStromToken(accountName, dbname, strongholdPassword){
             nativeTokenOptions,
         );
         console.log('Transaction ID: ', transaction.transactionId);
+        return transaction
     } catch (error) {
         console.log('Error: ', error);
         return "token creation failed"

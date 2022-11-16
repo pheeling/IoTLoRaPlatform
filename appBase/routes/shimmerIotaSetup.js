@@ -42,4 +42,19 @@ router.post('/setMasterPassword', function(req, res, next) {
         })
 });
 
+/* mint your own native token used for representing your energy*/
+router.post('/shimmerMintNativeToken', function(req, res, next) {
+  response = {
+    dbname : req.body.dbname,
+    accountName : req.body.accountName,
+    password : req.body.password,
+  };
+  console.log(response);
+
+  shimmerIotaAccount.mintMyStromToken(response.accountName, response.dbname, response.password)
+  .then( result=> {
+          res.render('shimmerIotaSetup', { title: 'Shimmer IoTa Setup', dataField: JSON.stringify(result)})
+      })
+});
+
 module.exports = router;
