@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@iota/client": "^2.2.0",
-    "@iota/wallet": "^2.0.2-alpha.23",
+    "@iota/wallet": "^2.0.3-rc.6",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.4",
     "csv-parse": "^5.0.4",

@@ -115,7 +115,8 @@ async function getUnlockedManager(dbname, strongholdPassword) {
             clientOptions: {
                 nodes: ['https://api.testnet.shimmer.network'],
                 localPow: true,
-            }
+            },
+            coinType: CoinType.Shimmer
         });
         managerPerm = manager
         await manager.setStrongholdPassword(strongholdPassword);
@@ -162,8 +163,10 @@ async function checkBalance(accountName, dbname, strongholdPassword) {
         var response = []
         const manager = await getUnlockedManager(dbname, strongholdPassword);
         const account = await manager.getAccount(accountName);
-        const addressObject = await account.listAddresses();
+        const addressObject = await account.addresses();
+        const addressUTXO = await account.addressesWithUnspentOutputs();
         console.log('Addresses before:', addressObject);
+        console.log('Addresses before:', addressUTXO);
 
         // Always sync before calling getBalance()
         const synced = await account.sync();
@@ -171,8 +174,10 @@ async function checkBalance(accountName, dbname, strongholdPassword) {
 
         const balance = await account.getBalance()
         response.push(addressObject)
+        response.push(addressUTXO)
         response.push(balance)
         console.log('Available balance', balance);
+        managerPerm.destroy()
         return response
     } catch (error) {
         console.log('Error: ', error);
@@ -190,7 +195,8 @@ async function mintMyStromToken(accountName, dbname, strongholdPassword){
         //TODO: solve issue data field missing when foundry or aliasoutput function ist called
         
         // First create an alias output, this needs to be done only once, because an alias can have many foundry outputs.
-        let tx = await account.buildFoundryOutput()
+        let tx = await account.buildAliasOutput()
+        //let tx = await account.buildFoundryOutput()
         console.log('Transaction ID: ', tx.transactionId);
         // Wait for transaction inclusion
         await new Promise(resolve => setTimeout(resolve, 5000));
@@ -204,6 +210,8 @@ async function mintMyStromToken(accountName, dbname, strongholdPassword){
             circulatingSupply: '0x64',
             // My Supply 100 in hex
             maximumSupply: '0x64',
+
+            data: ''
         };
 
         let { transaction } = await account.mintNativeToken(
