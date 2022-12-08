@@ -130,6 +130,7 @@ async function getUnlockedManager(dbname, strongholdPassword) {
             }
         });
         managerPerm = manager
+        await manager.setStrongholdPassword(strongholdPassword);
     }
     return managerPerm;
 }
@@ -191,12 +192,9 @@ async function mintMyStromToken(accountName, dbname, strongholdPassword){
         const account = await manager.getAccount(accountName);
         const synced = await account.sync();
         console.log('Syncing... - ', synced);
-
-        //TODO: solve issue data field missing when foundry or aliasoutput function ist called
         
         // First create an alias output, this needs to be done only once, because an alias can have many foundry outputs.
-        let tx = await account.buildAliasOutput()
-        //let tx = await account.buildFoundryOutput()
+        let tx = await account.createAliasOutput()()
         console.log('Transaction ID: ', tx.transactionId);
         // Wait for transaction inclusion
         await new Promise(resolve => setTimeout(resolve, 5000));
@@ -209,9 +207,7 @@ async function mintMyStromToken(accountName, dbname, strongholdPassword){
             // Supply 100 in hex
             circulatingSupply: '0x64',
             // My Supply 100 in hex
-            maximumSupply: '0x64',
-
-            data: ''
+            maximumSupply: '0x64'
         };
 
         let { transaction } = await account.mintNativeToken(
